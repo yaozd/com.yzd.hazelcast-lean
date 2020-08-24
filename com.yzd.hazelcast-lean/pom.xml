@@ -11,6 +11,7 @@
     <modules>
         <module>01-hazelcast-in-spring-boot</module>
         <module>01-hazelcast-management-center</module>
+        <module>02-hazelcast-in-vertx</module>
     </modules>
 
 
