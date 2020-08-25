@@ -12,6 +12,7 @@
         <module>01-hazelcast-in-spring-boot</module>
         <module>01-hazelcast-management-center</module>
         <module>02-hazelcast-in-vertx</module>
+        <module>02-hazelcast-in-grpc</module>
     </modules>
 
 
@@ -23,4 +24,17 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

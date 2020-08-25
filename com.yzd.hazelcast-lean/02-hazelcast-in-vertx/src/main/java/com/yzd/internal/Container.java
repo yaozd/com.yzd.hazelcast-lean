@@ -2,9 +2,7 @@ package com.yzd.internal;
 
 import com.yzd.config.ContainerConfig;
 import com.yzd.verticle.SimpleRouter;
-import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.http.HttpServerResponse;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +22,8 @@ public class Container {
     @Getter
     private ContainerConfig containerConfig;
     @Getter
-    private Map<String, HttpServerRequest> requestMap=new HashMap<>();
+    private Map<String, HttpServerRequest> requestMap = new HashMap<>();
+
     public static Container getInstance() {
         return INSTANCE;
     }
@@ -34,13 +33,13 @@ public class Container {
             log.warn("Start container ignore, because a container was started!");
             return;
         }
-        this.containerConfig=new ContainerConfig();
+        this.containerConfig = new ContainerConfig();
         startInternal();
         log.info("Start  container success!");
     }
 
     private void startInternal() {
-        this.simpleRouter=new SimpleRouter(this);
+        this.simpleRouter = new SimpleRouter(this);
     }
 
     public void shutdown() {
@@ -48,9 +47,11 @@ public class Container {
             log.warn("Stop container ignore, container stop!");
             return;
         }
+        simpleRouter.shutdown();
     }
-    public void addRequest(String uuid,HttpServerRequest request){
-        requestMap.put(uuid,request);
+
+    public void addRequest(String uuid, HttpServerRequest request) {
+        requestMap.put(uuid, request);
     }
 
     public void removeRequest(String uuid) {

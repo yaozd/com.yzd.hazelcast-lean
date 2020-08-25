@@ -31,3 +31,9 @@
     > //cors
       router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.POST));
 - []()
+
+## VERT.X 线程模型揭秘
+- [VERT.X 线程模型揭秘](https://www.cnblogs.com/zhangboyu/p/7452605.html)
+
+## 优雅停机
+- [优雅的关闭vertx](https://blog.csdn.net/qq_36752632/article/details/90702158)

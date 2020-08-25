@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package com.yzd.grpc;
+
+option java_package = "com.yzd.grpc";
+option java_outer_classname = "SenderProtos";
+
+service Sender {
+    rpc sendStream (stream DataStreamRequest) returns (stream DataStreamResponse) {
+    };
+}
+
+
+message DataStreamRequest {
+    string uuid = 2;
+    string request_info = 3;
+}
+
+message DataStreamResponse {
+    string uuid = 2;
+    bool is_ok = 3;
+}

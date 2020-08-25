@@ -6,11 +6,9 @@ package com.yzd.verticle;
  */
 
 import com.yzd.internal.Container;
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
+import io.vertx.core.*;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.impl.cpu.CpuCoreSensor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -27,7 +25,9 @@ public class SimpleRouter extends AbstractVerticle {
     }
 
     private void init() {
-        Vertx.vertx().deployVerticle(this);
+        VertxOptions vertxOptions = new VertxOptions()
+                .setWorkerPoolSize(5).setEventLoopPoolSize(CpuCoreSensor.availableProcessors());
+        Vertx.vertx(vertxOptions).deployVerticle(this);
     }
 
     @Override
@@ -61,6 +61,10 @@ public class SimpleRouter extends AbstractVerticle {
             }
         };
         server.listen(container.getContainerConfig().getRouterPort(), listenHandler);
+    }
+    public void shutdown(){
+        vertx.close();
+        vertx.nettyEventLoopGroup().shutdownGracefully();
     }
 
 //    @Override
