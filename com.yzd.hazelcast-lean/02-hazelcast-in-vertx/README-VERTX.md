@@ -25,3 +25,9 @@
 
 ## 拦截器Handler
 - [SpringBoot Vert.x 六（拦截器Handler）](https://pencilso.cn/archives/cbef2fcb356646e2827ddd785787e134)
+
+## Cors
+- [go、spring boot、vert.x 用CORS解决跨域](https://blog.csdn.net/bw_yyziq/article/details/85337276)
+    > //cors
+      router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.POST));
+- []()
