@@ -13,6 +13,7 @@
         <module>01-hazelcast-management-center</module>
         <module>02-hazelcast-in-vertx</module>
         <module>02-hazelcast-in-grpc</module>
+        <module>03-hazelcast-in-ring-queue</module>
     </modules>
 
 
@@ -22,6 +23,18 @@
             <artifactId>lombok</artifactId>
             <version>1.16.8</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- Unit Testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jctools</groupId>
+            <artifactId>jctools-core</artifactId>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
     <build>
