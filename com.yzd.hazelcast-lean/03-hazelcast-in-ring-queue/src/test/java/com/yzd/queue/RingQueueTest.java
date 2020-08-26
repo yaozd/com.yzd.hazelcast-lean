@@ -28,12 +28,20 @@ public class RingQueueTest {
         }
         Thread.sleep(60000);
         int count = 0;
-        for (StepSlot stepSlot : rq.getSlot()) {
+        for (int i = 0; i < rq.getSlot().length; i++) {
+            StepSlot stepSlot=rq.getSlot()[i];
             int size = stepSlot.getTasks().size();
             if (size > 0) {
+                System.out.println("stepSlot index:"+i);
                 count += size;
             }
         }
+//        for (StepSlot stepSlot : rq.getSlot()) {
+//            int size = stepSlot.getTasks().size();
+//            if (size > 0) {
+//                count += size;
+//            }
+//        }
         if (count > 0) {
             System.out.println("程序有BUG，未释放Task total:" + count);
         } else {
