@@ -1,7 +1,5 @@
 package com.yzd.queue;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,17 +17,16 @@ import java.util.concurrent.ThreadFactory;
 public class Steper implements Runnable {
     private AbstractRingQueue rq;
     private ThreadGroup stepGroup = new ThreadGroup("stepGroup");
-
-    public Steper(AbstractRingQueue rq) {
-        this.rq = rq;
-    }
-
     private ExecutorService stepPool = Executors.newCachedThreadPool(new ThreadFactory() {
         @Override
         public Thread newThread(Runnable r) {
             return new Thread(stepGroup, r);
         }
     });
+
+    public Steper(AbstractRingQueue rq) {
+        this.rq = rq;
+    }
 
     @Override
     public void run() {
@@ -56,6 +53,7 @@ public class Steper implements Runnable {
                         }
                     }
                 });
+                //创建新的对象，解决旧对象在扩容占用内存过大,FULL GC无法回收对象问题
                 slot.setTasks(new ConcurrentHashMap<>());
                 Thread.sleep(1000L);
             } catch (InterruptedException e) {

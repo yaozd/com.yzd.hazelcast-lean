@@ -12,8 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public class StepSlot {
-    @Getter@Setter
-    private Map<Long, Task> tasks = new ConcurrentHashMap<>();
+    @Getter
+    @Setter
+    private volatile Map<Long, Task> tasks = new ConcurrentHashMap<>();
 
     /**
      * 向槽内添加任务

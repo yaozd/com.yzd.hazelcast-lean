@@ -1,13 +1,17 @@
 package com.yzd.queue;
 
+import lombok.Getter;
+
 /**
  * 抽象环形队列
+ *
  * @Author: yaozh
  * @Description:
  */
 public abstract class AbstractRingQueue {
 
-    public static final int ONE_HOUR=3600;
+    public static final int ONE_HOUR = 3600;
+    @Getter
     protected StepSlot[] slot = new StepSlot[3600];
 
     public AbstractRingQueue() {
@@ -42,8 +46,9 @@ public abstract class AbstractRingQueue {
 
     /**
      * 替换task
+     *
      * @param slotIndex 槽位置
-     * @param task 任务
+     * @param task      任务
      */
     public abstract void replaceSlot(int slotIndex, Task task);
 

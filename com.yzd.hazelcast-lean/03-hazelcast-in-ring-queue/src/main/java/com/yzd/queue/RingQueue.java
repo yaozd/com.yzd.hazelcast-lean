@@ -2,6 +2,7 @@ package com.yzd.queue;
 
 /**
  * 环形队列
+ *
  * @Author: yaozh
  * @Description:
  */
@@ -31,7 +32,8 @@ public class RingQueue extends AbstractRingQueue {
         remove(slotIndex, task.getId());
         add(task);
     }
+
     public void start() {
-        new Thread(new Steper(this),"Thread-RingQueue").start();
+        new Thread(new Steper(this), "Thread-RingQueue").start();
     }
 }
