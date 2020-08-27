@@ -8,6 +8,11 @@ import org.junit.Test;
  * @Description:
  */
 public class RingQueueTest {
+    /**
+     * 程序有BUG,因为当一个线程在大量占用CPU有资源时，会导致Thread.sleep(1000L);时间不准确，在规定的时间不会被准时唤醒，
+     * 同样Scheduled调度的时间也会不准确
+     * @throws InterruptedException
+     */
     @Test
     public void ringQueueTest() throws InterruptedException {
         RingQueue rq = new RingQueue();

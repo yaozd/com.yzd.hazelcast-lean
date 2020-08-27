@@ -17,3 +17,10 @@
 - 轻量级延一次性延迟触发,如电商系统订单超时未支付自动取消
 
 > 源码解析： Steper-秒级扫描器 StepSlot-环形队列每一格插槽，一个环形队列包含3600个slot Task- 继承Runable，需要执行的具体任务 RingQueue-环形队列主体实现
+>
+
+### 参考
+- JCTools
+    - [JCTools](https://www.cnblogs.com/jmcui/p/12531040.html)
+    - []()
+    - []()
