@@ -75,19 +75,24 @@ public class RingQueue extends AbstractRingQueue implements Runnable {
 
                     @Override
                     public Thread newThread(Runnable r) {
-                        return new Thread(r, "T-RingQueue-Step-" + threadNum.getAndIncrement());
+                        Thread thread = new Thread(r, "T-RingQueue-Step-" + threadNum.getAndIncrement());
+                        //thread.setDaemon(true);
+                        return thread;
                     }
                 });
         this.executorService = new ScheduledThreadPoolExecutor(1, r -> {
             Thread thread = new Thread(r, "T-RingQueue");
-            thread.setDaemon(true);
+            //thread.setDaemon(true);
             return thread;
         });
-        executorService.scheduleAtFixedRate(this::run, ONE_SECOND, ONE_SECOND, TimeUnit.SECONDS);
+        this.executorService.scheduleAtFixedRate(this::run, ONE_SECOND, ONE_SECOND, TimeUnit.SECONDS);
     }
 
     @Override
     public void shutdown() {
+        for (StepSlot stepSlot : slot) {
+            stepSlot.setTasks(new ConcurrentHashMap<>());
+        }
         if (executorService != null) {
             executorService.shutdownNow();
         }

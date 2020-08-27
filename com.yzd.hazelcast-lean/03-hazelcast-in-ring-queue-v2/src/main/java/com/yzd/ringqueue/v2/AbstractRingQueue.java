@@ -14,6 +14,9 @@ public abstract class AbstractRingQueue {
     protected static final int ONE_HOUR = 3600;
     protected static final int ONE_SECOND = 1;
     protected AtomicLong taskId = new AtomicLong(0);
+    /**
+     * 当前时钟
+     */
     protected Integer currentSecond;
     @Getter
     protected StepSlot[] slot = new StepSlot[3600];
