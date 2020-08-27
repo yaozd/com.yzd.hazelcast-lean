@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>03-hazelcast-in-ring-queue</artifactId>
+    <artifactId>03-hazelcast-in-ring-queue-v2</artifactId>
     <properties>
         <springboot.version>2.2.0.RELEASE</springboot.version>
     </properties>
@@ -30,10 +30,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.jctools</groupId>
-            <artifactId>jctools-core</artifactId>
-            <version>3.0.0</version>
-        </dependency>
     </dependencies>
+
 </project>
