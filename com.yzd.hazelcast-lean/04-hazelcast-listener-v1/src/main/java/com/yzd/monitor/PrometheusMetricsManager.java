@@ -43,6 +43,8 @@ public class PrometheusMetricsManager implements MetricsManager {
 
     private static final String SERVICE_NAME_TAG = "service";
     private static final String GIT_SHORT_COMMIT_ID_TAG = "short_commit_id";
+    private static final String INNER_STATUS_TAG = "inner_status";
+    private static final String TARGET_STATUS_TAG = "target_status";
 
     private final HttpServer monitorHttpServer;
 
@@ -66,11 +68,10 @@ public class PrometheusMetricsManager implements MetricsManager {
                                     ExecutorService executorService) throws Exception {
         this.connectionGauge = Gauge.build().name(CONNECTION_METRICS)
                 .help("Listener total connections.")
-                .labelNames(SERVICE_NAME_TAG)
                 .register();
         this.requestCounter = Counter.build().name(REQUEST_COUNTER_METRICS)
                 .help("Listener total requests.")
-                .labelNames(SERVICE_NAME_TAG)
+                .labelNames(SERVICE_NAME_TAG, INNER_STATUS_TAG, TARGET_STATUS_TAG)
                 .register();
         this.exceptionCounter = Counter.build().name(EXCEPTION_METRICS)
                 .help("Listener total errors.")
@@ -127,13 +128,13 @@ public class PrometheusMetricsManager implements MetricsManager {
     }
 
     @Override
-    public void incrementConnectionGauge(String serviceName) {
-        connectionGauge.labels(serviceName).inc();
+    public void incrementConnectionGauge() {
+        connectionGauge.inc();
     }
 
     @Override
-    public void decrementConnectionGauge(String serviceName) {
-        connectionGauge.labels(serviceName).dec();
+    public void decrementConnectionGauge() {
+        connectionGauge.dec();
     }
 
     @Override
@@ -153,8 +154,8 @@ public class PrometheusMetricsManager implements MetricsManager {
 
 
     @Override
-    public void incrementRequestCounter(String serviceName) {
-        requestCounter.labels(serviceName).inc();
+    public void incrementRequestCounter(String serviceName,String innerStatus,String targetStatus) {
+        requestCounter.labels(serviceName,innerStatus,targetStatus).inc();
     }
 
     @Override
@@ -164,7 +165,7 @@ public class PrometheusMetricsManager implements MetricsManager {
     }
 
     @Override
-    public void incrementPayloadCounter(String serviceName, int amount) {
+    public void incrementPayloadCounter(String serviceName, long amount) {
         payloadCounter.labels(serviceName).inc(amount);
     }
 

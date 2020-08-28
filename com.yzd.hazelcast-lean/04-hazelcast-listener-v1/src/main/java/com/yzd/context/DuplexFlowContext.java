@@ -3,6 +3,9 @@ package com.yzd.context;
 import com.yzd.internal.Container;
 import io.vertx.core.http.HttpServerRequest;
 import lombok.Getter;
+import lombok.Setter;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @Author: yaozh
@@ -10,27 +13,50 @@ import lombok.Getter;
  */
 @Getter
 public class DuplexFlowContext implements FlowContext {
+    public static final int UNKNOWN_STATUS = -1;
+    private static final String SERVICE_NAME_KEY = "service";
+    private static final String NOT_FOUND_SERVICE = "not_found_service";
     private final Container container;
     private final HttpServerRequest httpServerRequest;
     private final long requestStartTime;
-    private boolean closed;
-
+    private final AtomicBoolean closed;
+    private final String serviceName;
+    private final long payload;
+    @Setter
+    private int innerStatus;
+    @Setter
+    private int targetStatus;
 
     public DuplexFlowContext(Container container,
                              HttpServerRequest httpServerRequest) {
         this.container = container;
         this.httpServerRequest = httpServerRequest;
-        requestStartTime = System.currentTimeMillis();
+        this.requestStartTime = System.currentTimeMillis();
+        this.serviceName = findServiceName();
+        this.payload = this.httpServerRequest.bytesRead();
+        this.closed = new AtomicBoolean(false);
+        this.innerStatus = UNKNOWN_STATUS;
+        this.targetStatus = UNKNOWN_STATUS;
+    }
+
+    private String findServiceName() {
+        String param = httpServerRequest.getParam(SERVICE_NAME_KEY);
+        return param == null ? NOT_FOUND_SERVICE : param;
     }
 
     @Override
-    public void close() {
-        this.closed = true;
+    public boolean close() {
+        return this.closed.compareAndSet(false, true);
     }
 
     @Override
     public boolean checkTimeout() {
         return System.currentTimeMillis() - requestStartTime >
                 container.getProtocolConfig().getMaxRequestTimeout();
+    }
+
+    @Override
+    public boolean isClosed() {
+        return this.closed.get();
     }
 }

@@ -22,17 +22,14 @@ public interface MetricsManager {
 
     /**
      * Increment connection gauge
-     *
-     * @param serviceName
      */
-    void incrementConnectionGauge(String serviceName);
+    void incrementConnectionGauge();
 
     /**
      * Decrement connection gauge
      *
-     * @param serviceName
      */
-    void decrementConnectionGauge(String serviceName);
+    void decrementConnectionGauge();
 
     /**
      * Increment exception counter
@@ -60,7 +57,7 @@ public interface MetricsManager {
      *
      * @param serviceName
      */
-    void incrementRequestCounter(String serviceName);
+    void incrementRequestCounter(String serviceName,String innerStatus,String targetStatus);
 
     /**
      * Change request latency histogram
@@ -76,7 +73,7 @@ public interface MetricsManager {
      * @param serviceName
      * @param amount
      */
-    void incrementPayloadCounter(String serviceName, int amount);
+    void incrementPayloadCounter(String serviceName, long amount);
 
     /**
      * Add the commit ID of GIT code to Prometheus, so that you can know the version of the currently running code

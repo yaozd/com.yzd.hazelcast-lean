@@ -8,7 +8,7 @@ public interface FlowContext {
     /**
      * Close
      */
-    void close();
+    boolean close();
 
     /**
      * Check timeout
