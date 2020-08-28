@@ -21,9 +21,11 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class SimpleRouter extends AbstractVerticle {
     private final Container container;
+    private final int port;
 
     public SimpleRouter(Container container) {
         this.container = container;
+        this.port = this.container.getRouterConfig().getPort();
         init();
     }
 
@@ -69,11 +71,11 @@ public class SimpleRouter extends AbstractVerticle {
                     log.warn("Listen failed!", httpServerAsyncResult.cause());
                     return;
                 }
-                log.info("Start simple router success! listen http://localhost:{}/ ",
-                        container.getRouterConfig().getPort());
+                log.info("The Listener server started successfully! bind to port [{}]  http://localhost:{}/ ",
+                        port, port);
             }
         };
-        server.listen(container.getRouterConfig().getPort(), listenHandler);
+        server.listen(port, listenHandler);
     }
 
     public void shutdown() {

@@ -1,6 +1,7 @@
 listener:
+  metrics: {port: 5555}
   container:
-    routerConfig: {port: 5555 }
+    routerConfig: {port: 6666 }
 logging:
   level:
     root: info

@@ -4,9 +4,11 @@ import com.yzd.config.ContainerConfig;
 import com.yzd.config.internal.ProtocolConfig;
 import com.yzd.config.internal.RouterConfig;
 import com.yzd.context.DuplexFlowContext;
+import com.yzd.monitor.MetricsManager;
 import com.yzd.verticle.SimpleRouter;
 import io.vertx.core.http.HttpServerRequest;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -28,6 +30,9 @@ public class Container {
     private volatile RouterConfig routerConfig;
     @Getter
     private ProtocolConfig protocolConfig;
+    @Getter
+    @Setter
+    private volatile MetricsManager metricsManager;
 
     public static Container getInstance() {
         return INSTANCE;

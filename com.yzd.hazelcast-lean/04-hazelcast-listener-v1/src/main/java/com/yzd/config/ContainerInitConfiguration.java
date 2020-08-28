@@ -19,6 +19,8 @@ public class ContainerInitConfiguration {
 
     @Autowired
     private ContainerProperties containerProperties;
+    @Autowired
+    private MonitorConfiguration monitorConfiguration;
 
     @PostConstruct
     private void initContainer() {
@@ -28,7 +30,9 @@ public class ContainerInitConfiguration {
             log.error("Init container error, config not found!");
             throw new ContainerInitException("ContainerInitConfiguration not found");
         }
-        Container.getInstance().start(containerConfig);
+        Container container=Container.getInstance();
+        container.setMetricsManager(monitorConfiguration.getMetricsManager());
+        container.start(containerConfig);
     }
 
     @PreDestroy
