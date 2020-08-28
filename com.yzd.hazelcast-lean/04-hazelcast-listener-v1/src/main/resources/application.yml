@@ -1,0 +1,6 @@
+listener:
+  container:
+    routerConfig: {port: 5555 }
+logging:
+  level:
+    root: info
