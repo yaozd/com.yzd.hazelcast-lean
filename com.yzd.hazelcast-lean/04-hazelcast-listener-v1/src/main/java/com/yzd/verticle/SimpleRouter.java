@@ -42,6 +42,10 @@ public class SimpleRouter extends AbstractVerticle {
     public void start() throws Exception {
         // 创建HttpServer
         HttpServer server = vertx.createHttpServer();
+        vertx.exceptionHandler(throwable -> {
+            log.error("Vertx inner error!", throwable);
+            container.getMetricsManager().incrementException("Unknown-Vertx");
+        });
         server.requestHandler(req -> {
             DuplexFlowContext duplexFlowContext = new DuplexFlowContext(this.container, req);
             ContainerEvent.fireEntryInput(duplexFlowContext);
@@ -52,7 +56,6 @@ public class SimpleRouter extends AbstractVerticle {
                         duplexFlowContext, StateEnum.UUID_NOT_FOUND, "NOT FOUND UUID !");
                 return;
             }
-            container.addDuplexFlowContext(uuid, duplexFlowContext);
             //单一请求连接事件
             req.connection().closeHandler(new Handler<Void>() {
                 @Override
@@ -63,11 +66,22 @@ public class SimpleRouter extends AbstractVerticle {
                     log.info("Close! request event, uuid:{}", uuid);
                 }
             });
-            req.exceptionHandler(exceptionEvent -> {
-                ContainerEvent.fireInterruptRequest(duplexFlowContext, StateEnum.INNER_ERROR, "Inner error !");
+            req.exceptionHandler(throwable -> {
+                log.error("Exception! request event, uuid:{}", uuid, throwable);
+                ContainerEvent.fireInterruptRequest(duplexFlowContext, StateEnum.REQUEST_HANDLER_ERROR, "Inner error !");
                 container.removeDuplexFlowContext(uuid);
-                log.info("Exception! request event, uuid:{}", uuid);
             });
+            container.addDuplexFlowContext(uuid, duplexFlowContext);
+            try {
+                //todo 业务逻辑处理
+                //模拟业务逻辑处理异常！！
+                int a = 0;
+                int i = 1 / a;
+            } catch (Exception ex) {
+                ContainerEvent.fireInterruptRequest(duplexFlowContext, StateEnum.BUSINESS_HANDLER_ERROR, "Business handler error!");
+                container.removeDuplexFlowContext(uuid);
+                log.error("Exception! request event, uuid:{}", uuid, ex);
+            }
         });
         //TCP连接事件
         server.connectionHandler(httpConnection -> {
@@ -81,6 +95,11 @@ public class SimpleRouter extends AbstractVerticle {
                     log.debug("Close! connection event.");
                 }
             });
+        });
+        //连接异常：远程强制关闭
+        server.exceptionHandler(throwable -> {
+            log.error("Unknown exception!", throwable);
+            container.getMetricsManager().incrementException("Unknown-Server");
         });
         Handler<AsyncResult<HttpServer>> listenHandler = new Handler<AsyncResult<HttpServer>>() {
             @Override

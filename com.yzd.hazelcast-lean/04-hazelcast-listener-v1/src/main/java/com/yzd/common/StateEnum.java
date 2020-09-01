@@ -20,6 +20,14 @@ public enum StateEnum {
      */
     INNER_ERROR(502, "Inner error!"),
     /**
+     * Business handler error!
+     */
+    BUSINESS_HANDLER_ERROR(502, "Business handler error!"),
+    /**
+     * Request handler error!
+     */
+    REQUEST_HANDLER_ERROR(502, "Request handler error!"),
+    /**
      * Request timeout
      */
     REQUEST_TIMEOUT(408, "Request timeout!");
@@ -29,19 +37,17 @@ public enum StateEnum {
 
     private String message;
 
+    StateEnum(int httpCode, String message) {
+        this.httpCode = httpCode;
+        this.message = message;
+    }
+
     public int getHttpCode() {
         return httpCode;
     }
 
-
     public String getMessage() {
         return message;
-    }
-
-
-    StateEnum(int httpCode, String message) {
-        this.httpCode = httpCode;
-        this.message = message;
     }
 
 }

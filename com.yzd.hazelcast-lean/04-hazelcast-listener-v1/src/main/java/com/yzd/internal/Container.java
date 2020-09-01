@@ -6,10 +6,10 @@ import com.yzd.config.internal.RouterConfig;
 import com.yzd.context.DuplexFlowContext;
 import com.yzd.monitor.MetricsManager;
 import com.yzd.verticle.SimpleRouter;
-import io.vertx.core.http.HttpServerRequest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Slf4j
 public class Container {
-    private static final Container INSTANCE = new Container();
     public static final AtomicBoolean STATUS = new AtomicBoolean();
+    private static final Container INSTANCE = new Container();
     private SimpleRouter simpleRouter;
     @Getter
     private Map<String, DuplexFlowContext> duplexFlowContextMap = new HashMap<>();
@@ -49,7 +49,7 @@ public class Container {
 
     private void startInternal(ContainerConfig containerConfig) {
         this.routerConfig = containerConfig.getRouterConfig();
-        this.protocolConfig=containerConfig.getProtocolConfig();
+        this.protocolConfig = containerConfig.getProtocolConfig();
         this.simpleRouter = new SimpleRouter(this);
     }
 
@@ -62,10 +62,16 @@ public class Container {
     }
 
     public void addDuplexFlowContext(String uuid, DuplexFlowContext duplexFlowContext) {
+        if (StringUtils.isBlank(uuid)) {
+            return;
+        }
         duplexFlowContextMap.put(uuid, duplexFlowContext);
     }
 
     public void removeDuplexFlowContext(String uuid) {
+        if (StringUtils.isBlank(uuid)) {
+            return;
+        }
         duplexFlowContextMap.remove(uuid);
     }
 }

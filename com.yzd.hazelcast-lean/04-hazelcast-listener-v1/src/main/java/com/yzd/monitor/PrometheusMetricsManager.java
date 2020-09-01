@@ -103,6 +103,37 @@ public class PrometheusMetricsManager implements MetricsManager {
         init(metricsConfig, executorService);
     }
 
+    protected static boolean shouldUseCompression(HttpExchange exchange) {
+        List<String> encodingHeaders = exchange.getRequestHeaders().get("Accept-Encoding");
+        if (encodingHeaders == null) {
+            return false;
+        }
+
+        for (String encodingHeader : encodingHeaders) {
+            String[] encodings = encodingHeader.split(",");
+            for (String encoding : encodings) {
+                if (encoding.trim().toLowerCase().equals("gzip")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected static Set<String> parseQuery(String query) throws IOException {
+        Set<String> names = new HashSet<String>();
+        if (query != null) {
+            String[] pairs = query.split("&");
+            for (String pair : pairs) {
+                int idx = pair.indexOf("=");
+                if (idx != -1 && URLDecoder.decode(pair.substring(0, idx), "UTF-8").equals("name[]")) {
+                    names.add(URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+                }
+            }
+        }
+        return names;
+    }
+
     @Override
     public void init(MetricsConfig metricsConfig, ExecutorService executorService) throws Exception {
         DefaultExports.initialize();
@@ -152,10 +183,9 @@ public class PrometheusMetricsManager implements MetricsManager {
         pendingRequestGauge.labels(serviceName).dec();
     }
 
-
     @Override
-    public void incrementRequestCounter(String serviceName,String innerStatus,String targetStatus) {
-        requestCounter.labels(serviceName,innerStatus,targetStatus).inc();
+    public void incrementRequestCounter(String serviceName, String innerStatus, String targetStatus) {
+        requestCounter.labels(serviceName, innerStatus, targetStatus).inc();
     }
 
     @Override
@@ -169,7 +199,6 @@ public class PrometheusMetricsManager implements MetricsManager {
         payloadCounter.labels(serviceName).inc(amount);
     }
 
-
     @Override
     public void gitShortCommitIdGauge(String shortCommitId) {
         gitShortCommitIdGauge.labels(shortCommitId).set(1);
@@ -180,11 +209,10 @@ public class PrometheusMetricsManager implements MetricsManager {
         containerConfigVersionGauge.set(version);
     }
 
-
     static class HttpMetricHandler implements HttpHandler {
 
-        private CollectorRegistry registry;
         private final LocalByteArray response = new LocalByteArray();
+        private CollectorRegistry registry;
 
         HttpMetricHandler(CollectorRegistry registry) {
             this.registry = registry;
@@ -220,37 +248,6 @@ public class PrometheusMetricsManager implements MetricsManager {
             t.close();
         }
 
-    }
-
-    protected static boolean shouldUseCompression(HttpExchange exchange) {
-        List<String> encodingHeaders = exchange.getRequestHeaders().get("Accept-Encoding");
-        if (encodingHeaders == null) {
-            return false;
-        }
-
-        for (String encodingHeader : encodingHeaders) {
-            String[] encodings = encodingHeader.split(",");
-            for (String encoding : encodings) {
-                if (encoding.trim().toLowerCase().equals("gzip")) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    protected static Set<String> parseQuery(String query) throws IOException {
-        Set<String> names = new HashSet<String>();
-        if (query != null) {
-            String[] pairs = query.split("&");
-            for (String pair : pairs) {
-                int idx = pair.indexOf("=");
-                if (idx != -1 && URLDecoder.decode(pair.substring(0, idx), "UTF-8").equals("name[]")) {
-                    names.add(URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
-                }
-            }
-        }
-        return names;
     }
 
     private static class LocalByteArray extends ThreadLocal<ByteArrayOutputStream> {

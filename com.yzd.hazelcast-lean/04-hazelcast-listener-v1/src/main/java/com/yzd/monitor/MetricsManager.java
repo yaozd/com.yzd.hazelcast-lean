@@ -27,7 +27,6 @@ public interface MetricsManager {
 
     /**
      * Decrement connection gauge
-     *
      */
     void decrementConnectionGauge();
 
@@ -57,7 +56,7 @@ public interface MetricsManager {
      *
      * @param serviceName
      */
-    void incrementRequestCounter(String serviceName,String innerStatus,String targetStatus);
+    void incrementRequestCounter(String serviceName, String innerStatus, String targetStatus);
 
     /**
      * Change request latency histogram

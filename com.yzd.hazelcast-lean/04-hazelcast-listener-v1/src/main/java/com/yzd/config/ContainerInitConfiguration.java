@@ -30,7 +30,7 @@ public class ContainerInitConfiguration {
             log.error("Init container error, config not found!");
             throw new ContainerInitException("ContainerInitConfiguration not found");
         }
-        Container container=Container.getInstance();
+        Container container = Container.getInstance();
         container.setMetricsManager(monitorConfiguration.getMetricsManager());
         container.start(containerConfig);
     }

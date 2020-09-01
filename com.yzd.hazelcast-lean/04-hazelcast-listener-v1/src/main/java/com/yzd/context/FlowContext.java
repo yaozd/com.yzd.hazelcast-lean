@@ -12,12 +12,14 @@ public interface FlowContext {
 
     /**
      * Check timeout
+     *
      * @return
      */
     boolean checkTimeout();
 
     /**
      * Is closed
+     *
      * @return
      */
     boolean isClosed();
