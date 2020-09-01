@@ -11,6 +11,7 @@ import com.yzd.internal.Container;
 import com.yzd.internal.ContainerEvent;
 import io.vertx.core.*;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.impl.cpu.CpuCoreSensor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,6 +47,13 @@ public class SimpleRouter extends AbstractVerticle {
             container.getMetricsManager().incrementException("Unknown-Vertx");
         });
         server.requestHandler(req -> {
+            //统计body的流量与body的内容
+            req.handler(data ->{
+                int capacity = data.getByteBuf().capacity();
+                log.info("Payload:{}",capacity);
+            });
+            //查询不到值，byteRead暂时无用
+            log.info("BytesRead:{}",req.bytesRead());
             DuplexFlowContext duplexFlowContext = new DuplexFlowContext(this.container, req);
             ContainerEvent.fireEntryInput(duplexFlowContext);
             if (!duplexFlowContext.isValid()) {
@@ -72,7 +80,7 @@ public class SimpleRouter extends AbstractVerticle {
                 //todo 业务逻辑处理
                 //模拟业务逻辑处理异常！！
                 int a = 0;
-                int i = 1 / a;
+                //int i = 1 / a;
             } catch (Throwable throwable) {
                 log.error("Exception! request event, uuid:{}", duplexFlowContext.getUuid(), throwable);
                 ContainerEvent.fireInterruptRequest(

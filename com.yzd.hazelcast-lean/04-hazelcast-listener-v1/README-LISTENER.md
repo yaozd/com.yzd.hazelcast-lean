@@ -20,3 +20,31 @@
     }));
     vertx.createHttpServer().requestHandler(router::accept).listen(8085);
     ```
+    - [vertx中web全局异常处理](https://leokongwq.github.io/2017/12/02/vertx-web-global-exception.html)
+    ```
+    404 已经 500 异常处理
+    public class MyFirstVerticle extends AbstractVerticle {
+    
+        @Override
+        public void start() throws Exception {
+            final Router router = Router.router(vertx);
+            router.get("/hello").handler(context -> {
+                Integer.parseInt(context.request().getParam("age"));
+                context.response().end("hello vert.x");
+            }).failureHandler(context -> {
+                context.response().end("Route internal error process");
+            });
+            router.get("/world").handler(context -> {
+                Integer.parseInt(context.request().getParam("age"));
+                context.response().end("hello world");
+            });
+            //最后一个Route
+            router.route().last().handler(context -> {
+                context.response().end("404");
+            }).failureHandler(context -> {
+               context.response().end("global error process");
+            });
+            vertx.createHttpServer().requestHandler(router::accept).listen(9090);
+        }
+    }
+    ```
