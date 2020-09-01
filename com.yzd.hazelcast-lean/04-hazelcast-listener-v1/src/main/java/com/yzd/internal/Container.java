@@ -61,15 +61,14 @@ public class Container {
         simpleRouter.shutdown();
     }
 
-    public void addDuplexFlowContext(String uuid, DuplexFlowContext duplexFlowContext) {
-        if (StringUtils.isBlank(uuid)) {
-            return;
+    public void addDuplexFlowContext(DuplexFlowContext duplexFlowContext) {
+        if (duplexFlowContext != null && duplexFlowContext.isValid()) {
+            duplexFlowContextMap.put(duplexFlowContext.getUuid(), duplexFlowContext);
         }
-        duplexFlowContextMap.put(uuid, duplexFlowContext);
     }
 
     public void removeDuplexFlowContext(String uuid) {
-        if (StringUtils.isBlank(uuid)) {
+        if (DuplexFlowContext.DEFAULT_UUID.equals(uuid)) {
             return;
         }
         duplexFlowContextMap.remove(uuid);

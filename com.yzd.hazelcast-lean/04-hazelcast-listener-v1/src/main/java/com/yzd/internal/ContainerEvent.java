@@ -27,11 +27,13 @@ public class ContainerEvent {
         if (!duplexFlowContext.close()) {
             return;
         }
+        Container container = duplexFlowContext.getContainer();
+        container.removeDuplexFlowContext(duplexFlowContext.getUuid());
         int statusCode = state.getHttpCode();
         duplexFlowContext.setInnerStatus(statusCode);
-        duplexFlowContext.getContainer().getMetricsManager()
+        container.getMetricsManager()
                 .decrementRequestPendingGauge(duplexFlowContext.getServiceName());
-        duplexFlowContext.getContainer().getMetricsManager()
+        container.getMetricsManager()
                 .incrementRequestCounter(duplexFlowContext.getServiceName(),
                         String.valueOf(duplexFlowContext.getInnerStatus()),
                         String.valueOf(duplexFlowContext.getTargetStatus()));

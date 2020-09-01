@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Getter
 public class DuplexFlowContext implements FlowContext {
     public static final int UNKNOWN_STATUS = -1;
+    public static final String DEFAULT_UUID = "-";
     private static final String UUID_KEY = "uuid";
     private static final String SERVICE_NAME_KEY = "service";
     private static final String NOT_FOUND_SERVICE = "not_found_service";
@@ -24,6 +25,7 @@ public class DuplexFlowContext implements FlowContext {
     private final String serviceName;
     private final long payload;
     private final String uuid;
+    private final boolean valid;
     @Setter
     private int innerStatus;
     @Setter
@@ -40,10 +42,12 @@ public class DuplexFlowContext implements FlowContext {
         this.closed = new AtomicBoolean(false);
         this.innerStatus = UNKNOWN_STATUS;
         this.targetStatus = UNKNOWN_STATUS;
+        this.valid = !DEFAULT_UUID.equals(this.uuid);
     }
 
     private String findUUID() {
-        return httpServerRequest.getParam(UUID_KEY);
+        String param = httpServerRequest.getParam(UUID_KEY);
+        return param == null ? DEFAULT_UUID : param;
     }
 
     private String findServiceName() {

@@ -32,13 +32,13 @@ import java.util.zip.GZIPOutputStream;
 @Slf4j
 public class PrometheusMetricsManager implements MetricsManager {
 
-    private static final String CONNECTION_METRICS = "connections";
-    private static final String EXCEPTION_METRICS = "exception_total";
-    private static final String PENDING_REQUEST_METRICS = "requests_pending";
-    private static final String REQUEST_COUNTER_METRICS = "requests_total";
-    private static final String PAYLOAD_SIZE_METRICS = "payload_bytes";
-    private static final String REQUEST_LATENCY_METRICS = "request_seconds";
-    private static final String GIT_INFO_METRICS = "git_info";
+    private static final String CONNECTION_METRICS = "container_connections";
+    private static final String EXCEPTION_METRICS = "container_exception_total";
+    private static final String PENDING_REQUEST_METRICS = "container_requests_pending";
+    private static final String REQUEST_COUNTER_METRICS = "container_requests_total";
+    private static final String PAYLOAD_SIZE_METRICS = "container_payload_bytes";
+    private static final String REQUEST_LATENCY_METRICS = "container_request_seconds";
+    private static final String GIT_INFO_METRICS = "container_git_info";
     private static final String CONTAINER_CONFIG_VERSION_METRICS = "container_config_version";
 
     private static final String SERVICE_NAME_TAG = "service";

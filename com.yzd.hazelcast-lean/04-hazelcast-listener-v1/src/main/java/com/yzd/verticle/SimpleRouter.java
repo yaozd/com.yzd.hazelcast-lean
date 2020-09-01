@@ -13,7 +13,6 @@ import io.vertx.core.*;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.impl.cpu.CpuCoreSensor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 简单的路由使用
@@ -43,44 +42,41 @@ public class SimpleRouter extends AbstractVerticle {
         // 创建HttpServer
         HttpServer server = vertx.createHttpServer();
         vertx.exceptionHandler(throwable -> {
-            log.error("Vertx inner error!", throwable);
+            log.error("Unknown vertx error!", throwable);
             container.getMetricsManager().incrementException("Unknown-Vertx");
         });
         server.requestHandler(req -> {
             DuplexFlowContext duplexFlowContext = new DuplexFlowContext(this.container, req);
             ContainerEvent.fireEntryInput(duplexFlowContext);
-            String uuid = req.getParam(UUID_KEY);
-            /*String uuid = req.headers().get(UUID_KEY);*/
-            if (StringUtils.isEmpty(uuid)) {
+            if (!duplexFlowContext.isValid()) {
                 ContainerEvent.fireInterruptRequest(
-                        duplexFlowContext, StateEnum.UUID_NOT_FOUND, "NOT FOUND UUID !");
+                        duplexFlowContext, StateEnum.UUID_NOT_FOUND, "Not found uuid!");
                 return;
             }
             //单一请求连接事件
             req.connection().closeHandler(new Handler<Void>() {
                 @Override
                 public void handle(Void aVoid) {
+                    log.warn("Close! request event, uuid:{}", duplexFlowContext.getUuid());
                     ContainerEvent.fireInterruptRequest(
-                            duplexFlowContext, StateEnum.CLIENT_CLOSED_CONNECTION, "Client close connection !");
-                    container.removeDuplexFlowContext(uuid);
-                    log.info("Close! request event, uuid:{}", uuid);
+                            duplexFlowContext, StateEnum.CLIENT_CLOSED_CONNECTION, "Client close connection!");
                 }
             });
             req.exceptionHandler(throwable -> {
-                log.error("Exception! request event, uuid:{}", uuid, throwable);
-                ContainerEvent.fireInterruptRequest(duplexFlowContext, StateEnum.REQUEST_HANDLER_ERROR, "Inner error !");
-                container.removeDuplexFlowContext(uuid);
+                log.error("Exception! request event, uuid:{}", duplexFlowContext.getUuid(), throwable);
+                ContainerEvent.fireInterruptRequest(
+                        duplexFlowContext, StateEnum.REQUEST_HANDLER_ERROR, throwable.toString());
             });
-            container.addDuplexFlowContext(uuid, duplexFlowContext);
+            container.addDuplexFlowContext(duplexFlowContext);
             try {
                 //todo 业务逻辑处理
                 //模拟业务逻辑处理异常！！
                 int a = 0;
                 int i = 1 / a;
-            } catch (Exception ex) {
-                ContainerEvent.fireInterruptRequest(duplexFlowContext, StateEnum.BUSINESS_HANDLER_ERROR, "Business handler error!");
-                container.removeDuplexFlowContext(uuid);
-                log.error("Exception! request event, uuid:{}", uuid, ex);
+            } catch (Throwable throwable) {
+                log.error("Exception! request event, uuid:{}", duplexFlowContext.getUuid(), throwable);
+                ContainerEvent.fireInterruptRequest(
+                        duplexFlowContext, StateEnum.BUSINESS_HANDLER_ERROR, throwable.toString());
             }
         });
         //TCP连接事件
@@ -98,7 +94,7 @@ public class SimpleRouter extends AbstractVerticle {
         });
         //连接异常：远程强制关闭
         server.exceptionHandler(throwable -> {
-            log.error("Unknown exception!", throwable);
+            log.error("Unknown server exception!", throwable);
             container.getMetricsManager().incrementException("Unknown-Server");
         });
         Handler<AsyncResult<HttpServer>> listenHandler = new Handler<AsyncResult<HttpServer>>() {
