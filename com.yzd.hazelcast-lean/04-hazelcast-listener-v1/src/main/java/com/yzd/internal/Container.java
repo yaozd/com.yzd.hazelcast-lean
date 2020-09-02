@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -22,7 +25,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Container {
     public static final AtomicBoolean STATUS = new AtomicBoolean();
     private static final Container INSTANCE = new Container();
+    private static final int ONE_SECOND = 1;
     private SimpleRouter simpleRouter;
+    private ScheduledExecutorService executorService;
     @Getter
     private Map<String, DuplexFlowContext> duplexFlowContextMap = new ConcurrentHashMap<>();
     @Getter
@@ -43,7 +48,17 @@ public class Container {
             return;
         }
         startInternal(containerConfig);
+        this.executorService = new ScheduledThreadPoolExecutor(1, r -> {
+            Thread thread = new Thread(r, "T-Container-Metrics");
+            //thread.setDaemon(true);
+            return thread;
+        });
+        this.executorService.scheduleAtFixedRate(this::metricsJob, ONE_SECOND, ONE_SECOND, TimeUnit.SECONDS);
         log.info("Start  container success!");
+    }
+
+    private void metricsJob() {
+        metricsManager.activeRequestContextGauge(duplexFlowContextMap.size());
     }
 
     private void startInternal(ContainerConfig containerConfig) {

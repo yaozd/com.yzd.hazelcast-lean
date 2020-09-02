@@ -33,6 +33,7 @@ import java.util.zip.GZIPOutputStream;
 public class PrometheusMetricsManager implements MetricsManager {
 
     private static final String CONNECTION_METRICS = "container_connections";
+    private static final String ACTIVE_REQUEST_CONTEXTS_METRICS = "container_active_request_contexts";
     private static final String EXCEPTION_METRICS = "container_exception_total";
     private static final String PENDING_REQUEST_METRICS = "container_requests_pending";
     private static final String REQUEST_COUNTER_METRICS = "container_requests_total";
@@ -63,6 +64,8 @@ public class PrometheusMetricsManager implements MetricsManager {
     private final Gauge gitShortCommitIdGauge;
 
     private final Gauge containerConfigVersionGauge;
+
+    private final Gauge requestContextGauge;
 
     public PrometheusMetricsManager(MetricsConfig metricsConfig,
                                     ExecutorService executorService) throws Exception {
@@ -98,6 +101,9 @@ public class PrometheusMetricsManager implements MetricsManager {
                 .register();
         this.containerConfigVersionGauge = Gauge.build().name(CONTAINER_CONFIG_VERSION_METRICS)
                 .help("Listener current running container config version.")
+                .register();
+        this.requestContextGauge = Gauge.build().name(ACTIVE_REQUEST_CONTEXTS_METRICS)
+                .help("Listener total active request contexts.")
                 .register();
         this.monitorHttpServer = HttpServer.create();
         init(metricsConfig, executorService);
@@ -207,6 +213,11 @@ public class PrometheusMetricsManager implements MetricsManager {
     @Override
     public void containerConfigVersionGauge(int version) {
         containerConfigVersionGauge.set(version);
+    }
+
+    @Override
+    public void activeRequestContextGauge(int amount) {
+        requestContextGauge.set(amount);
     }
 
     static class HttpMetricHandler implements HttpHandler {

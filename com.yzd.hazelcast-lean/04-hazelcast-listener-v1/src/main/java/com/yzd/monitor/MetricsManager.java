@@ -89,4 +89,12 @@ public interface MetricsManager {
      */
     void containerConfigVersionGauge(int version);
 
+    /**
+     * Active request  context
+     * 活跃请求上下文
+     *
+     * @param amount
+     */
+    void activeRequestContextGauge(int amount);
+
 }

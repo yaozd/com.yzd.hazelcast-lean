@@ -96,6 +96,7 @@ public class SimpleRouter extends AbstractVerticle {
         //连接异常：远程强制关闭
         server.exceptionHandler(throwable -> {
             log.error("Unknown server exception!", throwable);
+            container.getMetricsManager().decrementConnectionGauge();
             container.getMetricsManager().incrementException("Unknown-Server");
             //触发请求关闭事件：Close request event
             server.requestHandler();
