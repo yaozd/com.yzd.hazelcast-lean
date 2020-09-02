@@ -196,7 +196,7 @@ public class PrometheusMetricsManager implements MetricsManager {
 
     @Override
     public void incrementPayloadCounter(String serviceName, long amount) {
-        payloadCounter.labels(serviceName).inc(amount);
+        //payloadCounter.labels(serviceName).inc(amount);
     }
 
     @Override

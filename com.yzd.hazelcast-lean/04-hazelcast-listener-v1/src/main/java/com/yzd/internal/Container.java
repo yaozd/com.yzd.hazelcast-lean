@@ -9,10 +9,9 @@ import com.yzd.verticle.SimpleRouter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -25,7 +24,7 @@ public class Container {
     private static final Container INSTANCE = new Container();
     private SimpleRouter simpleRouter;
     @Getter
-    private Map<String, DuplexFlowContext> duplexFlowContextMap = new HashMap<>();
+    private Map<String, DuplexFlowContext> duplexFlowContextMap = new ConcurrentHashMap<>();
     @Getter
     private volatile RouterConfig routerConfig;
     @Getter

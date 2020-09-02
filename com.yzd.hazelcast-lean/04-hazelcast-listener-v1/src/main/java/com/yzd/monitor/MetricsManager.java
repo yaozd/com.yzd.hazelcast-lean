@@ -68,6 +68,7 @@ public interface MetricsManager {
 
     /**
      * Increment payload counter
+     * 目前Vert.x流量暂时统计不到
      *
      * @param serviceName
      * @param amount
