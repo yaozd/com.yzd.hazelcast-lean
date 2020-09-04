@@ -49,7 +49,7 @@ public class Container {
         }
         startInternal(containerConfig);
         this.executorService = new ScheduledThreadPoolExecutor(1, r -> {
-            Thread thread = new Thread(r, "T-Container-Metrics");
+            Thread thread = new Thread(r, "T-Container-Metrics-Job");
             //thread.setDaemon(true);
             return thread;
         });

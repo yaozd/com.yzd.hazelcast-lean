@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class MonitorThreadFactory implements ThreadFactory {
 
-    public static final String PREFIX = "T-monitor-";
+    public static final String PREFIX = "T-Prometheus-Monitor-";
 
     private static final AtomicInteger THREAD_COUNT = new AtomicInteger(0);
 
