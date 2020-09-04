@@ -17,6 +17,7 @@
         <module>03-hazelcast-in-ring-queue-v2</module>
         <module>04-hazelcast-listener-v1</module>
         <module>02-hazelcast-in-vertx-client</module>
+        <module>01-hazelcast-network</module>
     </modules>
 
     <properties>
