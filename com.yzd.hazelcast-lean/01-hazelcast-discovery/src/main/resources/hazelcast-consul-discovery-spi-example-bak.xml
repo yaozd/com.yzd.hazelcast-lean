@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hazelcast id="hazelcast-consul-discovery"
+           xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-4.0.xsd"
+           xmlns="http://www.hazelcast.com/schema/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <network>
+        <join>
+            <multicast enabled="false"></multicast>
+            <discovery-strategies>
+                <discovery-strategy enabled="true"
+                                    class="com.yzd.discovery.consul.ConsulDiscoveryStrategy">
+                    <properties>
+                        <!--  hostname or IP of the consul server -->
+                        <property name="consul-host">localhost</property>
+                        <!--  port of the consul server -->
+                        <property name="consul-port">8500</property>
+                    </properties>
+                </discovery-strategy>
+
+            </discovery-strategies>
+        </join>
+    </network>
+</hazelcast>

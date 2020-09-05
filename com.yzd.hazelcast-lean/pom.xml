@@ -18,6 +18,7 @@
         <module>04-hazelcast-listener-v1</module>
         <module>02-hazelcast-in-vertx-client</module>
         <module>01-hazelcast-network</module>
+        <module>01-hazelcast-discovery</module>
     </modules>
 
     <properties>

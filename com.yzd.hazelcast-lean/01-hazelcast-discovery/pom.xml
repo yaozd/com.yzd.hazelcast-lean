@@ -9,12 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>01-hazelcast-network</artifactId>
+    <artifactId>01-hazelcast-discovery</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
-            <version>3.8.3</version>
+            <version>4.0.2</version>
         </dependency>
     </dependencies>
     <build>
@@ -31,7 +31,8 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.yzd.StartUpNetwork</mainClass>
                                 </transformer>
                             </transformers>
@@ -41,4 +42,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
