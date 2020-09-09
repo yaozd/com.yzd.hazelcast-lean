@@ -19,6 +19,7 @@
         <module>02-hazelcast-in-vertx-client</module>
         <module>01-hazelcast-network</module>
         <module>01-hazelcast-discovery</module>
+        <module>05-hazelcast-rocketmq</module>
     </modules>
 
     <properties>
