@@ -31,6 +31,7 @@ public class Consumer {
                                                             ConsumeConcurrentlyContext context) {
                 System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
                 for (Message msg : msgs) {
+
                     String jsonStr = new String(msg.getBody());
                     System.out.println("receive is " + jsonStr);
                 }
@@ -40,7 +41,7 @@ public class Consumer {
 
         //Launch the consumer instance.
         consumer.start();
-
+        consumer.getAwaitTerminationMillisWhenShutdown();
         System.out.printf("Consumer Started.%n");
     }
 }

@@ -18,7 +18,56 @@
 - 消息模式
     - 广播消费(一条消息被多个 Consumer 消费,在广播消费中的 Consumer Group 概念可以认为在消息划分方面无意义)
     - 集群消费(一个 Consumer Group 中的 Consumer 实例平均分摊消费消息。)
+- [Topic，Topic分片和Queue](https://blog.csdn.net/qq_34930488/article/details/101282436)
+    ```
+    一个Broker=>多个Topic=>多个Queue
+    ```
+- 消息ACK机制
+    - [RocketMQ——消息ACK机制及消费进度管理](https://blog.csdn.net/linuxheik/article/details/79579329)
+    - [rocketmq——关于消费的疑惑（ACK机制）](https://blog.csdn.net/qq_35362055/article/details/81560388)
+    - []()
+    - []()
+    - []()
+- RocketMQ批量消费、消息重试、消费模式、刷盘方式
+    - [RocketMQ批量消费、消息重试、消费模式、刷盘方式](https://blog.csdn.net/u010634288/article/details/56049305)
+- 消息消费管理
+    - [RocketMQ4.0源码分析之-消息消费管理](https://blog.csdn.net/binzhaomobile/article/details/75004190)
+        ```
+        幂等
+        广播消费vs. 集群消费
+        拉消息vs. 推消息
+        顺序消费vs. 并行消费
+        ```
+- consumer优雅停机
+    - [rocketmq consumer优雅停机的探索](https://www.jianshu.com/p/676890f09a05)
+    ```
+    MQ_RUN信号变量,假设叫MQ_RUN=1，当rocketmq消费消息时读取该变量，判断是MQ_RUN==1，成立则继续执行
+    ```
 - 
+- 
+- 
+## RocketMQ设计理念和目标
+- [RocketMQ技术内幕学习笔记](https://blog.csdn.net/dezhonger/article/details/96387459)
+- [RocketMQ技术内幕 PDF 下载](http://www.java1234.com/a/javabook/javaweb/2019/0303/13055.html)
+````
+设计理念:S
+    NameServer集群之间互不通信，topic路由不保持强一致，追求最终一致，相比ZK有极大提升
+    高效的IO存储机制
+    容忍存在设计缺陷
+设计目标:
+    架构模式
+    顺序消息
+    消息过滤
+    消息存储
+    消息高可用性
+    消息到达(消费)低延迟
+    确保消息必须被消费一次
+    回溯消息
+    消息堆积
+    定时消息
+    消息重试机制
+````
+
 
 ## 安装
 - windows
