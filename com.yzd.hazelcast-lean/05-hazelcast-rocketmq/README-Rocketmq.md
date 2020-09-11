@@ -43,8 +43,63 @@
     ```
     MQ_RUN信号变量,假设叫MQ_RUN=1，当rocketmq消费消息时读取该变量，判断是MQ_RUN==1，成立则继续执行
     ```
-- 
-- 
+## 事务消息
+- [分布式事务之 RocketMQ 事务消息详解](https://zhuanlan.zhihu.com/p/108751293) 
+- 两个相关的概念
+    - [Half(Prepare) Message——半消息(预处理消息)](https://zhuanlan.zhihu.com/p/108751293)
+    - [Message Status Check——消息状态回查](https://zhuanlan.zhihu.com/p/108751293)
+- 具体流程进行分析
+```
+Step1：Producer向Broker端发送Half Message；
+Step2：Broker ACK，Half Message发送成功；
+Step3：Producer执行本地事务；
+Step4：本地事务完毕，根据事务的状态，Producer向Broker发送二次确认消息，确认该Half Message的Commit或者Rollback状态。
+        Broker收到二次确认消息后，对于Commit状态，则直接发送到Consumer端执行消费逻辑，
+        而对于Rollback则直接标记为失败，一段时间后清除，并不会发给Consumer。正常情况下，到此分布式事务已经完成，
+        剩下要处理的就是超时问题，即一段时间后Broker仍没有收到Producer的二次确认消息；
+Step5：针对超时状态，Broker主动向Producer发起消息回查；
+Step6：Producer处理回查消息，返回对应的本地事务的执行结果；
+Step7：Broker针对回查消息的结果，执行Commit或Rollback操作，同Step4。
+```
+
+## 配置参考
+- [SpringBoot2.0 整合 RocketMQ ,实现请求异步处理](https://mp.weixin.qq.com/s/uF29K8gzv7qHYk-K2pQkpQ)
+- [https://github.com/cicadasmile/middle-ware-parent](https://github.com/cicadasmile/middle-ware-parent)
+```
+rocketmq:
+  # 生产者配置
+  producer:
+    isOnOff: on
+    # 发送同一类消息的设置为同一个group，保证唯一
+    groupName: FeePlatGroup
+    # 服务地址
+    namesrvAddr: 10.1.1.207:9876
+    # 消息最大长度 默认1024*4(4M)
+    maxMessageSize: 4096
+    # 发送消息超时时间,默认3000
+    sendMsgTimeout: 3000
+    # 发送消息失败重试次数，默认2
+    retryTimesWhenSendFailed: 2
+  # 消费者配置
+  consumer:
+    isOnOff: on
+    # 官方建议：确保同一组中的每个消费者订阅相同的主题。
+    groupName: FeePlatGroup
+    # 服务地址
+    namesrvAddr: 10.1.1.207:9876
+    # 接收该 Topic 下所有 Tag
+    topics: FeePlatTopic~*;
+    consumeThreadMin: 20
+    consumeThreadMax: 64
+    # 设置一次消费消息的条数，默认为1条
+    consumeMessageBatchMaxSize: 1
+ 
+# 配置 Group  Topic  Tag
+fee-plat:
+  fee-plat-group: FeePlatGroup
+  fee-plat-topic: FeePlatTopic
+  fee-account-tag: FeeAccountTag
+``` 
 - 
 ## RocketMQ设计理念和目标
 - [RocketMQ技术内幕学习笔记](https://blog.csdn.net/dezhonger/article/details/96387459)
