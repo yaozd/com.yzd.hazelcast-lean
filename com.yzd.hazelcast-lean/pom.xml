@@ -20,6 +20,7 @@
         <module>01-hazelcast-network</module>
         <module>01-hazelcast-discovery</module>
         <module>05-hazelcast-rocketmq</module>
+        <module>01-hazelcast-discovery-v2</module>
     </modules>
 
     <properties>
