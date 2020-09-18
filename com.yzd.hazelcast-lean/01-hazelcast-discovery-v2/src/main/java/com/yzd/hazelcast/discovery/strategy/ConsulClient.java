@@ -1,18 +1,27 @@
 package com.yzd.hazelcast.discovery.strategy;
 
+import com.hazelcast.cluster.Address;
+import com.hazelcast.spi.discovery.DiscoveryNode;
+import com.hazelcast.spi.discovery.SimpleDiscoveryNode;
 import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.Consul;
+import com.orbitz.consul.HealthClient;
 import com.orbitz.consul.NotRegisteredException;
+import com.orbitz.consul.model.ConsulResponse;
 import com.orbitz.consul.model.agent.ImmutableRegCheck;
 import com.orbitz.consul.model.agent.ImmutableRegistration;
 import com.orbitz.consul.model.agent.Registration;
+import com.orbitz.consul.model.health.ServiceHealth;
 
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ConsulClient {
-    private static final String SERVICE_CREATE_TIME = "SCT";
+    public static final String SERVICE_CREATE_TIME = "SCT";
     private static ConsulClient ourInstance = new ConsulClient();
     private final Consul consul;
     private String serviceName;
@@ -37,13 +46,13 @@ public class ConsulClient {
         return consul.agentClient();
     }
 
-    public void init(String serviceName, String serviceId, String ip, int port, int ttl, String... tags) {
+    public void init(String serviceName, String ip, int port, int ttl, String... tags) {
         this.serviceName = serviceName;
-        this.serviceId = serviceId;
         this.ip = ip;
         this.port = port;
         this.tags = tags;
         this.ttl = ttl;
+        this.serviceId = serviceName + "[" + ip + ":" + port + "]";
     }
 
     private Consul newConsul() {
@@ -100,7 +109,7 @@ public class ConsulClient {
             //thread.setDaemon(true);
             return thread;
         });
-        int period = Math.max(1, this.ttl / 2 + 1);
+        int period = Math.max(1, (this.ttl - 2) / 2);
         this.heartbeatService.scheduleAtFixedRate(this::pass, 0, period, TimeUnit.SECONDS);
     }
 
@@ -116,5 +125,28 @@ public class ConsulClient {
 
     private String nowToStr() {
         return String.valueOf(System.currentTimeMillis());
+    }
+
+    /**
+     * 寻找有效的健康服务
+     *
+     * @throws UnknownHostException
+     */
+    public List<DiscoveryNode> healthService() {
+        List<DiscoveryNode> toReturn = new ArrayList<DiscoveryNode>();
+        HealthClient healthClient = consul.healthClient();
+        ConsulResponse<List<ServiceHealth>> serviceInstances = healthClient.getHealthyServiceInstances(serviceName);
+        List<ServiceHealth> serviceHealthList = serviceInstances.getResponse();
+        try {
+            for (ServiceHealth node : serviceHealthList) {
+                toReturn.add(new SimpleDiscoveryNode(new Address(
+                        node.getService().getAddress(),
+                        node.getService().getPort())));
+                System.out.println("Discovered healthy node: " + node.getService().getAddress() + ":" + node.getService().getPort());
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        return toReturn;
     }
 }

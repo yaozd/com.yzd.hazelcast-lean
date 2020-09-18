@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hazelcast id="hazelcast-consul-discovery"
+           xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-4.0.xsd"
+           xmlns="http://www.hazelcast.com/schema/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <cluster-name>hazelcast-consul-discovery-spi</cluster-name>
+    <properties>
+        <!-- 是否开启服务发现 -->
+        <property name="hazelcast.discovery.enabled">true</property>
+        <property name="hazelcast.shutdownhook.enabled">true</property>
+    </properties>
+    <network>
+        <port auto-increment="true">5701</port>
+        <join>
+            <multicast enabled="false"></multicast>
+            <tcp-ip enabled="false"></tcp-ip>
+            <aws enabled="false"></aws>
+            <discovery-strategies>
+                <discovery-strategy enabled="true"
+                                    class="com.yzd.hazelcast.discovery.strategy.ConsulDiscoveryStrategy">
+                </discovery-strategy>
+            </discovery-strategies>
+        </join>
+    </network>
+</hazelcast>
