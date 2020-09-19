@@ -21,6 +21,7 @@
         <module>01-hazelcast-discovery</module>
         <module>05-hazelcast-rocketmq</module>
         <module>01-hazelcast-discovery-v2</module>
+        <module>02-hazelcast-in-vertx-shell</module>
     </modules>
 
     <properties>
