@@ -33,28 +33,37 @@ public class CommandUtil {
         return result;
     }
 
+    public static String runCmdNew(String command) {
+        try {
+            return runCmdOrThrow(command);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "命令调用失败！"+e+"\r\n";
+        }
+    }
+
     /**
      * @param command
      * @return
      */
-    public static String runCmdNew(String command) {
+    public static String runCmdOrThrow(String command) throws IOException, InterruptedException {
+        BufferedReader br = null;
         try {
-            // 执行ping命令
-            //Process process = Runtime.getRuntime().exec("cmd /c e:&dir");
             Process process = Runtime.getRuntime().exec(command);
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(process.getInputStream(), Charset.forName(getSystemCharset())));
+            process.waitFor();
+            br = new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.forName(getSystemCharset())));
             StringBuffer sb = new StringBuffer();
             String line = null;
             while ((line = br.readLine()) != null) {
-                sb.append(line);
+                sb.append(line).append("\n");
                 System.out.println(line);
             }
             return sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                br.close();
+            }
         }
-        return "ERROR!";
     }
 
     public static String getSystemCharset() {
