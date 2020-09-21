@@ -21,7 +21,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ConsulClient {
-    public static final String SERVICE_CREATE_TIME = "SCT";
+    public static final String SERVICE_CREATE_TIME = "[SCT:]";
+    public static final String SERVICE_LAST_UPDATE_TIME = "[SLUT:]";
     private static ConsulClient ourInstance = new ConsulClient();
     private final Consul consul;
     private String serviceName;
@@ -69,7 +70,9 @@ public class ConsulClient {
                 .address(this.ip)
                 .port(this.port)
                 .tags(Arrays.asList(this.tags))
-                .putMeta(SERVICE_CREATE_TIME, nowToStr())
+                //将创建时间打入到标签。在没有SLUT的时候，通过标签中的创建时间判断是否超时
+                .addTags(SERVICE_CREATE_TIME+nowToStr())
+                //.putMeta(SERVICE_CREATE_TIME, nowToStr())
                 .addChecks(ttlCheck);
         agentClient.register(registrationBuilder.build());
         //超时时间为10S;
@@ -117,7 +120,7 @@ public class ConsulClient {
         try {
             //Output:
             //增加一些附肋信息，帮助我们更好的判断当前状态发现的时间，做出正确的处理逻辑
-            agentClient.pass(this.serviceId, nowToStr());
+            agentClient.pass(this.serviceId, SERVICE_LAST_UPDATE_TIME+nowToStr());
         } catch (NotRegisteredException e) {
             throw new RuntimeException(e);
         }
