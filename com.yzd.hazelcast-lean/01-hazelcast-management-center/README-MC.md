@@ -2,7 +2,7 @@
 
 ## 官方文档
 - [https://docs.hazelcast.org/docs/latest/manual/html-single/index.html#set](https://docs.hazelcast.org/docs/latest/manual/html-single/index.html#set)
-- []()
+- [Hazelcast: Threading Model](https://docs.hazelcast.org/docs/latest/manual/html-single/index.html#threading-model)
 
 ## 配置参考
 - [Hazelcast.xml 配置文件说明](https://my.oschina.net/vdroid/blog/754883)
