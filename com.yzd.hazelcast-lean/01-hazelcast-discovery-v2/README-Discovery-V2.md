@@ -7,9 +7,11 @@
 1.
 I/O Threading
 hazelcast.io.input.thread.count and hazelcast.io.output.thread.count
+PS:default value is 3 per member
 2.
 Event Threading
 hazelcast.event.thread.count
+PS:default value is 5
 3.
 Operation Threading
 hazelcast.operation.thread.count
