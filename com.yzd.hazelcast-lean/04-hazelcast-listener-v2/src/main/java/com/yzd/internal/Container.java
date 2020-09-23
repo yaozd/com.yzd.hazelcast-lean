@@ -4,6 +4,7 @@ import com.yzd.config.ContainerConfig;
 import com.yzd.config.internal.ProtocolConfig;
 import com.yzd.config.internal.RouterConfig;
 import com.yzd.context.DuplexFlowContext;
+import com.yzd.hazelcast.SessionStorage;
 import com.yzd.monitor.MetricsManager;
 import com.yzd.verticle.SimpleRouter;
 import lombok.Getter;
@@ -37,6 +38,9 @@ public class Container {
     @Getter
     @Setter
     private volatile MetricsManager metricsManager;
+    @Getter
+    @Setter
+    private volatile SessionStorage sessionStorage;
 
     public static Container getInstance() {
         return INSTANCE;

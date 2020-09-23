@@ -12,6 +12,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ConfigurationProperties(prefix = "listener")
 public class ContainerProperties {
-
     private ContainerConfig container;
 }
