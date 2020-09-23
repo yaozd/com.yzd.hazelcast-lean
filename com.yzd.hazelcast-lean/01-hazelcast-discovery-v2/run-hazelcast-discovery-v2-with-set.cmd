@@ -1,0 +1,1 @@
+java -Xms100m -Xmx100m -cp 01-hazelcast-discovery-v2-1.0-SNAPSHOT.jar com.yzd.hazelcast.discovery.StartUpDiscoveryConsulWithSet
