@@ -83,6 +83,7 @@ public class Container {
     public void addDuplexFlowContext(DuplexFlowContext duplexFlowContext) {
         if (duplexFlowContext != null && duplexFlowContext.isValid()) {
             duplexFlowContextMap.put(duplexFlowContext.getUuid(), duplexFlowContext);
+            sessionStorage.addSessionId(duplexFlowContext.getUuid());
         }
     }
 
@@ -91,5 +92,6 @@ public class Container {
             return;
         }
         duplexFlowContextMap.remove(uuid);
+        sessionStorage.removeSessionId(uuid);
     }
 }

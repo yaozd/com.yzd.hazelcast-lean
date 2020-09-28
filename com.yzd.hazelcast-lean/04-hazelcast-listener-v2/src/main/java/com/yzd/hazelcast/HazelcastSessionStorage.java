@@ -129,11 +129,21 @@ public class HazelcastSessionStorage implements SessionStorage {
     public SessionInfo getSessionInfo(String uuid) {
         for (SessionInfo sessionInfo : sessionInfoList) {
             ISet<Object> set = instance.getSet(sessionInfo.getSetid());
-            if(set!=null&&set.contains(uuid)){
+            if (set != null && set.contains(uuid)) {
                 return sessionInfo;
             }
         }
         return null;
+    }
+
+    @Override
+    public void addSessionId(String uuid) {
+        instance.getSet(localSetName).add(uuid);
+    }
+
+    @Override
+    public void removeSessionId(String uuid) {
+        instance.getSet(localSetName).remove(uuid);
     }
 
     private void addSessionInfosOfOutMember(List<SessionInfo> tempSessionInfos) {
@@ -162,7 +172,7 @@ public class HazelcastSessionStorage implements SessionStorage {
      */
     @Override
     public void shutdown() {
-        if(instance==null){
+        if (instance == null) {
             return;
         }
         instance.getSet(localSetName).destroy();

@@ -29,5 +29,9 @@ public interface SessionStorage {
 
     SessionInfo getSessionInfo(String uuid);
 
+    void addSessionId(String uuid);
+
+    void removeSessionId(String uuid);
+
     void shutdown();
 }

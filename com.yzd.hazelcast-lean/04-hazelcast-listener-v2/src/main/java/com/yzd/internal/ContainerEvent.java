@@ -16,34 +16,37 @@ public class ContainerEvent {
                 .incrementRequestPendingGauge(duplexFlowContext.getServiceName());
     }
 
-    private static void fireEntryOutputComplete(DuplexFlowContext duplexFlowContext) {
+    private static void fireEntryOutputComplete(DuplexFlowContext duplexFlowContext,String message) {
         if (!duplexFlowContext.close()) {
             return;
         }
-        routerLog(duplexFlowContext);
+        int targetCode=duplexFlowContext.getTargetStatus();
+        duplexFlowContext.setInnerStatus(targetCode);
+        duplexFlowContext.getHttpServerRequest().response().setStatusCode(targetCode).end(message);
+        complete(duplexFlowContext);
     }
 
     public static void fireInterruptRequest(DuplexFlowContext duplexFlowContext, StateEnum state, String message) {
         if (!duplexFlowContext.close()) {
             return;
         }
-        Container container = duplexFlowContext.getContainer();
-        container.removeDuplexFlowContext(duplexFlowContext.getUuid());
         int statusCode = state.getHttpCode();
         duplexFlowContext.setInnerStatus(statusCode);
+        duplexFlowContext.getHttpServerRequest().response().setStatusCode(statusCode).end(message);
+        complete(duplexFlowContext);
+    }
+
+    private static void complete(DuplexFlowContext duplexFlowContext) {
+        Container container = duplexFlowContext.getContainer();
+        container.removeDuplexFlowContext(duplexFlowContext.getUuid());
         container.getMetricsManager()
                 .decrementRequestPendingGauge(duplexFlowContext.getServiceName());
         container.getMetricsManager()
                 .incrementRequestCounter(duplexFlowContext.getServiceName(),
                         String.valueOf(duplexFlowContext.getInnerStatus()),
                         String.valueOf(duplexFlowContext.getTargetStatus()));
-        duplexFlowContext.getHttpServerRequest().response().setStatusCode(statusCode).end(message);
-        routerLog(duplexFlowContext);
-    }
-
-    private static void routerLog(DuplexFlowContext duplexFlowContext) {
         long totalCost = System.currentTimeMillis() - duplexFlowContext.getRequestStartTime();
-        duplexFlowContext.getContainer().getMetricsManager()
+        container.getMetricsManager()
                 .changeRequestLatencyHistogram(duplexFlowContext.getServiceName(), totalCost);
     }
 }
