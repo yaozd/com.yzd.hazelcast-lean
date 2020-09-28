@@ -1,8 +1,8 @@
 listener:
-  metrics: {port: 5555}
+#  metrics: {port: 5555}
+#  container:
+#    routerConfig: {port: 6666 }
   session: {consulUrl: http://127.0.0.1:8500,serviceName: ABC}
-  container:
-    routerConfig: {port: 6666 }
 logging:
   level:
     root: info

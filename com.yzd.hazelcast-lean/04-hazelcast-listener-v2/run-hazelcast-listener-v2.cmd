@@ -1,0 +1,1 @@
+java -Xms100m -Xmx100m -jar 04-hazelcast-listener-v2-1.0-SNAPSHOT.jar

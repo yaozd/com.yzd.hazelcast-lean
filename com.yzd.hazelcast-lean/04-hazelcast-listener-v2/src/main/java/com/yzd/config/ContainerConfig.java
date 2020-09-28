@@ -12,6 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ContainerConfig {
-    private RouterConfig routerConfig;
-    private ProtocolConfig protocolConfig;
+    private RouterConfig routerConfig=new RouterConfig();
+    private ProtocolConfig protocolConfig=new ProtocolConfig();
 }

@@ -1,5 +1,6 @@
 package com.yzd.config;
 
+import com.yzd.utils.SocketUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,7 +13,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "listener.metrics")
 public class MetricsConfig {
 
-    private int port = 9311;
+    //private int port = 9311;
+    private int port = SocketUtil.getRandomPort();
 
     private int connectionBacklogSize = 100;
 

@@ -27,4 +27,7 @@ public interface SessionStorage {
      */
     void update();
 
+    SessionInfo getSessionInfo(String uuid);
+
+    void shutdown();
 }

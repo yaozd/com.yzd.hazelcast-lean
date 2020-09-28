@@ -77,6 +77,7 @@ public class Container {
             return;
         }
         simpleRouter.shutdown();
+        sessionStorage.shutdown();
     }
 
     public void addDuplexFlowContext(DuplexFlowContext duplexFlowContext) {
