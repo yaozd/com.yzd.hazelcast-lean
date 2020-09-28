@@ -1,14 +1,17 @@
 package com.yzd.hazelcast;
 
+import com.hazelcast.cluster.Member;
+import com.hazelcast.collection.ISet;
 import com.hazelcast.config.*;
+import com.hazelcast.core.DistributedObject;
 import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 import com.yzd.config.SessionConfig;
 import com.yzd.hazelcast.discovery.strategy.ConsulDiscoveryConfiguration;
 import com.yzd.hazelcast.discovery.strategy.ConsulDiscoveryStrategy;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @Author: yaozh
@@ -17,17 +20,29 @@ import java.util.UUID;
 @Slf4j
 public class HazelcastSessionStorage implements SessionStorage {
 
-    private static final String INSTANCE_NAME = "yzd";
+    private final static String GRPC_PORT_ATTRIBUTE = "grpc_port_key";
+    private final String SET_ID_ATTRIBUTE = "set_id_key";
+    private final String uuidSetName;
+    private final String instanceName;
+    private final HazelcastInstance instance;
+    /**
+     * 本地节点set对象
+     */
+    private final ISet<String> localSet;
+    /**
+     * 外部节点set对象集合
+     */
+    private List<ISet<String>> outDistributedSetObjects = new ArrayList<>();
 
     public HazelcastSessionStorage(SessionConfig sessionConfig) {
+        this.instanceName = sessionConfig.getServiceName();
         Config conf = new ClasspathXmlConfig("hazelcast-consul-discovery-spi-example.xml");
         initDiscoveryConfig(sessionConfig, conf);
-        conf.setInstanceName(INSTANCE_NAME);
+        conf.setInstanceName(instanceName);
         //
-        String SET_ID = "setId";
-        String setUUID = UUID.randomUUID().toString();
+        uuidSetName = UUID.randomUUID().toString();
         SetConfig setConfig = new SetConfig();
-        setConfig.setName(setUUID);
+        setConfig.setName(uuidSetName);
         //备份的数量。如果1设置为备份数量，也就是说为了安全将map上的所有条目复制到另一个JVM上
         //0表示没有备份。
         setConfig.setBackupCount(0);
@@ -36,14 +51,20 @@ public class HazelcastSessionStorage implements SessionStorage {
         setConfig.setStatisticsEnabled(false);
         conf.addSetConfig(setConfig);
         MemberAttributeConfig memberAttributeConfig = new MemberAttributeConfig();
-        memberAttributeConfig.setAttribute(SET_ID, setUUID);
+        memberAttributeConfig.setAttribute(SET_ID_ATTRIBUTE, uuidSetName);
+        memberAttributeConfig.setAttribute(GRPC_PORT_ATTRIBUTE, "6501");
         conf.setMemberAttributeConfig(memberAttributeConfig);
         //
         conf.getManagementCenterConfig().setScriptingEnabled(false);
         conf.getPartitionGroupConfig().setEnabled(false);
         conf.getMetricsConfig().getManagementCenterConfig().setEnabled(false);
         //
-        Hazelcast.newHazelcastInstance(conf);
+        ListenerConfig listenerConfig = new ListenerConfig();
+        listenerConfig.setImplementation(new ClusterMembershipListener(this));
+        conf.addListenerConfig(listenerConfig);
+        //
+        this.instance = Hazelcast.newHazelcastInstance(conf);
+        this.localSet = this.instance.getSet(uuidSetName);
     }
 
     private void initDiscoveryConfig(SessionConfig sessionConfig, Config conf) {
@@ -65,6 +86,50 @@ public class HazelcastSessionStorage implements SessionStorage {
                         addProperty(ConsulDiscoveryConfiguration.CONSUL_SERVICE_TAGS.key(), sessionConfig.getTags());
             }
         }
-
     }
+
+    @Override
+    public String getMemberId(Member member) {
+        return String.format("%s|%d|%s", member.getSocketAddress().getHostString(),
+                member.getSocketAddress().getPort(), member.getUuid());
+    }
+
+    @Override
+    public void destroyDistributedObjectsByMemberId(String memberId) {
+        Collection<DistributedObject> distributedObjects = getDistributedObjects();
+        for (DistributedObject distributedObject : distributedObjects) {
+            if (distributedObject.getName().equals(memberId)) {
+                distributedObject.destroy();
+            }
+        }
+    }
+
+    @Override
+    public void update() {
+        if (instance == null) {
+            return;
+        }
+        Map<String, Member> allMemberMap = new HashMap<>();
+        List<ISet<String>> setList = new ArrayList<>();
+        Set<Member> allMembers = instance.getCluster().getMembers();
+        for (Member member : allMembers) {
+            if (member.localMember()) {
+                continue;
+            }
+            allMemberMap.put(getMemberId(member), member);
+            setList.add(instance.getSet(getMemberId(member)));
+            Integer grpcPort = Integer.parseInt(member.getAttribute(GRPC_PORT_ATTRIBUTE));
+            log.warn("grpc port:{}", grpcPort);
+        }
+        setOutDistributedSetObjects(setList);
+    }
+
+    private void setOutDistributedSetObjects(List<ISet<String>> outDistributedSetObjects) {
+        this.outDistributedSetObjects = outDistributedSetObjects;
+    }
+
+    private Collection<DistributedObject> getDistributedObjects() {
+        return instance.getDistributedObjects();
+    }
+
 }

@@ -36,3 +36,21 @@ if(startDate.before(endDate)){
     System.out.println("startDate等于endDate");
 }
 ```
+
+## FQA(Frequently Asked Questions的缩写，中文意思就是“经常问到的问题”)
+- CP Subsystem is not enabled. CP data structures will operate in UNSAFE mode! Please note that UNSAFE mode will not provide strong consistency guarantees
+- [cp-subsystem-configuration](https://docs.hazelcast.org/docs/latest/manual/html-single/index.html#cp-subsystem-configuration) 官方
+```
+目前，CP子系统只包含Hazelcast并发api的实现
+<cp-subsystem>
+    <cp-member-count>7</cp-member-count>
+    <group-size>3</group-size>
+    <session-time-to-live-seconds>300</session-time-to-live-seconds>
+    <session-heartbeat-interval-seconds>5</session-heartbeat-interval-seconds>
+    <missing-cp-member-auto-removal-seconds>14400</missing-cp-member-auto-removal-seconds>
+    <fail-on-indeterminate-operation-state>false</fail-on-indeterminate-operation-state>
+    <persistence-enabled>false</persistence-enabled>
+</cp-subsystem>
+
+PS:CP persistence requires Hazelcast Enterprise Edition (企业版支持CP持久化)
+```
