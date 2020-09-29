@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package com.yzd.grpc.transfer;
+
+option java_package = "com.yzd.grpc.transfer";
+option java_outer_classname = "TransferProtos";
+
+service Transfer {
+    rpc sendStream (stream RequestData) returns (stream ResponseData) {
+    };
+    rpc send (RequestData) returns (ResponseData) {
+    };
+}
+
+
+message RequestData {
+    string uuid = 2;
+    int32 status_code = 3;
+    string return_body = 4;
+}
+
+message ResponseData {
+    string uuid = 2;
+    bool is_ok = 3;
+}

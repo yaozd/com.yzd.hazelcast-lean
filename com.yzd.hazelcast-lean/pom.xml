@@ -24,6 +24,7 @@
         <module>02-hazelcast-in-vertx-shell</module>
         <module>04-hazelcast-listener-v2</module>
         <module>06-hazelcast-auto-test</module>
+        <module>02-hazelcast-in-grpc-transfer</module>
     </modules>
 
     <properties>
