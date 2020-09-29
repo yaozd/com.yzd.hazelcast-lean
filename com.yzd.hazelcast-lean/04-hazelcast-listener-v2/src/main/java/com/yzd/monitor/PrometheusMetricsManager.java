@@ -41,11 +41,13 @@ public class PrometheusMetricsManager implements MetricsManager {
     private static final String REQUEST_LATENCY_METRICS = "container_request_seconds";
     private static final String GIT_INFO_METRICS = "container_git_info";
     private static final String CONTAINER_CONFIG_VERSION_METRICS = "container_config_version";
+    private static final String ACTIVE_SESSION_METRICS = "container_active_sessions";
 
     private static final String SERVICE_NAME_TAG = "service";
     private static final String GIT_SHORT_COMMIT_ID_TAG = "short_commit_id";
     private static final String INNER_STATUS_TAG = "inner_status";
     private static final String TARGET_STATUS_TAG = "target_status";
+
 
     private final HttpServer monitorHttpServer;
 
@@ -66,6 +68,8 @@ public class PrometheusMetricsManager implements MetricsManager {
     private final Gauge containerConfigVersionGauge;
 
     private final Gauge requestContextGauge;
+
+    private final Gauge sessionGauge;
 
     public PrometheusMetricsManager(MetricsConfig metricsConfig,
                                     ExecutorService executorService) throws Exception {
@@ -104,6 +108,9 @@ public class PrometheusMetricsManager implements MetricsManager {
                 .register();
         this.requestContextGauge = Gauge.build().name(ACTIVE_REQUEST_CONTEXTS_METRICS)
                 .help("Listener total active request contexts.")
+                .register();
+        this.sessionGauge = Gauge.build().name(ACTIVE_SESSION_METRICS)
+                .help("Listener total active session.")
                 .register();
         this.monitorHttpServer = HttpServer.create();
         init(metricsConfig, executorService);
@@ -218,6 +225,11 @@ public class PrometheusMetricsManager implements MetricsManager {
     @Override
     public void activeRequestContextGauge(int amount) {
         requestContextGauge.set(amount);
+    }
+
+    @Override
+    public void activeLocalSessionGauge(int size) {
+        sessionGauge.set(size);
     }
 
     static class HttpMetricHandler implements HttpHandler {

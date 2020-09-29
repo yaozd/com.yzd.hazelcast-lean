@@ -179,4 +179,10 @@ public class HazelcastSessionStorage implements SessionStorage {
         instance.shutdown();
     }
 
+    @Override
+    public int size() {
+        ISet<Object> set = instance.getSet(localSetName);
+        return set == null ? 0 : set.size();
+    }
+
 }

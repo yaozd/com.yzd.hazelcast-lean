@@ -63,6 +63,7 @@ public class Container {
 
     private void metricsJob() {
         metricsManager.activeRequestContextGauge(duplexFlowContextMap.size());
+        metricsManager.activeLocalSessionGauge(sessionStorage.size());
     }
 
     private void startInternal(ContainerConfig containerConfig) {

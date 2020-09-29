@@ -34,4 +34,6 @@ public interface SessionStorage {
     void removeSessionId(String uuid);
 
     void shutdown();
+
+    int size();
 }

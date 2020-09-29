@@ -97,4 +97,9 @@ public interface MetricsManager {
      */
     void activeRequestContextGauge(int amount);
 
+    /**
+     * local session
+     * @param size
+     */
+    void activeLocalSessionGauge(int size);
 }
