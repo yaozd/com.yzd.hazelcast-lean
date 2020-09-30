@@ -29,13 +29,13 @@ public class HazelcastSessionStorage implements SessionStorage {
      * 本地节点set对象
      */
     private final ISet<String> localSet;
-    private final SessionInfo localSessionInfo;
+    private final NodeInfo localNodeInfo;
     /**
      * 外部节点set对象集合
      */
     private List<ISet<String>> outDistributedSetObjects = new ArrayList<>();
 
-    private List<SessionInfo> sessionInfoList = new ArrayList<>();
+    private List<NodeInfo> nodeInfoList = new ArrayList<>();
 
     public HazelcastSessionStorage(SessionConfig sessionConfig) {
         this.instanceName = sessionConfig.getServiceName();
@@ -69,15 +69,15 @@ public class HazelcastSessionStorage implements SessionStorage {
         this.instance = Hazelcast.newHazelcastInstance(conf);
         this.localSet = this.instance.getSet(localSetName);
         Member localMember = this.instance.getCluster().getLocalMember();
-        this.localSessionInfo = newSessionInfo(localMember);
+        this.localNodeInfo = newSessionInfo(localMember);
     }
 
-    private SessionInfo newSessionInfo(Member member) {
-        return new SessionInfo().setMemberId(getMemberId(member))
+    private NodeInfo newSessionInfo(Member member) {
+        return new NodeInfo().setMemberId(getMemberId(member))
                 .setIp(member.getSocketAddress().getHostString())
                 .setPort(member.getSocketAddress().getPort())
                 .setSetid(member.getAttribute(SET_ID_ATTRIBUTE))
-                .setGrpc(Integer.parseInt(member.getAttribute(GRPC_PORT_ATTRIBUTE)));
+                .setGrpcPort(Integer.parseInt(member.getAttribute(GRPC_PORT_ATTRIBUTE)));
     }
 
     private void initDiscoveryConfig(SessionConfig sessionConfig, Config conf) {
@@ -119,18 +119,18 @@ public class HazelcastSessionStorage implements SessionStorage {
 
     @Override
     public void update() {
-        List<SessionInfo> tempSessionInfos = new ArrayList<>();
-        tempSessionInfos.add(localSessionInfo);
-        addSessionInfosOfOutMember(tempSessionInfos);
-        this.sessionInfoList = tempSessionInfos;
+        List<NodeInfo> tempNodeInfos = new ArrayList<>();
+        tempNodeInfos.add(localNodeInfo);
+        addSessionInfosOfOutMember(tempNodeInfos);
+        this.nodeInfoList = tempNodeInfos;
     }
 
     @Override
-    public SessionInfo getSessionInfo(String uuid) {
-        for (SessionInfo sessionInfo : sessionInfoList) {
-            ISet<Object> set = instance.getSet(sessionInfo.getSetid());
+    public NodeInfo findNodeInfoBySessionId(String uuid) {
+        for (NodeInfo nodeInfo : nodeInfoList) {
+            ISet<Object> set = instance.getSet(nodeInfo.getSetid());
             if (set != null && set.contains(uuid)) {
-                return sessionInfo;
+                return nodeInfo;
             }
         }
         return null;
@@ -146,7 +146,7 @@ public class HazelcastSessionStorage implements SessionStorage {
         instance.getSet(localSetName).remove(uuid);
     }
 
-    private void addSessionInfosOfOutMember(List<SessionInfo> tempSessionInfos) {
+    private void addSessionInfosOfOutMember(List<NodeInfo> tempNodeInfos) {
         if (instance == null) {
             return;
         }
@@ -155,7 +155,7 @@ public class HazelcastSessionStorage implements SessionStorage {
             if (member.localMember()) {
                 continue;
             }
-            tempSessionInfos.add(newSessionInfo(member));
+            tempNodeInfos.add(newSessionInfo(member));
         }
     }
 

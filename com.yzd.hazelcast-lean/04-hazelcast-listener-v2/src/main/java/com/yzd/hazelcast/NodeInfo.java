@@ -11,10 +11,10 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Getter
 @Setter
-public class SessionInfo {
+public class NodeInfo {
     private String ip;
     private int port;
-    private int grpc;
+    private int grpcPort;
     private String memberId;
     private String setid;
 }

@@ -27,7 +27,7 @@ public interface SessionStorage {
      */
     void update();
 
-    SessionInfo getSessionInfo(String uuid);
+    NodeInfo findNodeInfoBySessionId(String uuid);
 
     void addSessionId(String uuid);
 
