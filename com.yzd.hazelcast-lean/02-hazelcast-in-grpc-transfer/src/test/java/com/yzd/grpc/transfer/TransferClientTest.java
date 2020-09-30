@@ -21,7 +21,7 @@ public class TransferClientTest {
     public void init() {
         //
         channelBuilder = ManagedChannelBuilder
-                .forAddress("localhost", 30200)
+                .forAddress("localhost", 1001)
                 .maxInboundMessageSize(1024 * 1024 * 20)
                 //发起RST_STREAM 帧（RST_STREAM 类型的 frame，可以在不断开连接的前提下取消某个 request 的 stream）：
                 //通过keepAliveTime与keepAliveTimeout的时间调整,可以模拟RST_STREAM 帧
@@ -36,7 +36,7 @@ public class TransferClientTest {
     public void call(){
         TransferGrpc.TransferBlockingStub transferBlockingStub = TransferGrpc.newBlockingStub(channel);
         TransferProtos.RequestData requestData= TransferProtos.RequestData.newBuilder()
-                .setUuid("TEST")
+                .setUuid("99626fae-6b42-412f-b403-3142a72d2b30")
                 .setStatusCode(200)
                 .setReturnBody(String.valueOf(System.currentTimeMillis())).build();
         TransferProtos.ResponseData responseData = transferBlockingStub.send(requestData);

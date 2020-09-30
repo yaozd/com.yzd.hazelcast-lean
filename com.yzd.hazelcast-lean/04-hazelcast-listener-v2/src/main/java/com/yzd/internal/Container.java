@@ -3,9 +3,11 @@ package com.yzd.internal;
 import com.yzd.config.ContainerConfig;
 import com.yzd.config.internal.ProtocolConfig;
 import com.yzd.config.internal.RouterConfig;
+import com.yzd.config.internal.TransferConfig;
 import com.yzd.context.DuplexFlowContext;
 import com.yzd.hazelcast.SessionStorage;
 import com.yzd.monitor.MetricsManager;
+import com.yzd.transfer.TransferServer;
 import com.yzd.verticle.SimpleRouter;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,11 +38,15 @@ public class Container {
     @Getter
     private ProtocolConfig protocolConfig;
     @Getter
+    private TransferConfig transferConfig;
+    @Getter
     @Setter
     private volatile MetricsManager metricsManager;
     @Getter
     @Setter
     private volatile SessionStorage sessionStorage;
+
+    private TransferServer transferServer;
 
     public static Container getInstance() {
         return INSTANCE;
@@ -69,7 +75,9 @@ public class Container {
     private void startInternal(ContainerConfig containerConfig) {
         this.routerConfig = containerConfig.getRouterConfig();
         this.protocolConfig = containerConfig.getProtocolConfig();
+        this.transferConfig = containerConfig.getTransferConfig();
         this.simpleRouter = new SimpleRouter(this);
+        this.transferServer = new TransferServer(this);
     }
 
     public void shutdown() {
@@ -77,8 +85,9 @@ public class Container {
             log.warn("Stop container ignore, container stop!");
             return;
         }
-        simpleRouter.shutdown();
         sessionStorage.shutdown();
+        simpleRouter.shutdown();
+        transferServer.shutdown();
     }
 
     public void addDuplexFlowContext(DuplexFlowContext duplexFlowContext) {

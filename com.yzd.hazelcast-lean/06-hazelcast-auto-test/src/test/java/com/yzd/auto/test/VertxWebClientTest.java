@@ -26,7 +26,7 @@ public class VertxWebClientTest {
     public void init() {
         vertxWebClient = new VertxWebClient(MAX_POOL_SIZE);
         urlTemplate = "http://127.0.0.1:1000/?uuid=%s";
-        System.out.println(newURI());
+        System.out.println("sample:"+newURI());
     }
 
     @After
@@ -35,9 +35,10 @@ public class VertxWebClientTest {
     }
 
     @Test
-    @PerfTest(threads = 100, invocations = 100000)
+    @PerfTest(threads = 10, invocations = 1)
     public void get() {
         URI uri = newURI();
+        System.out.println(uri);
         vertxWebClient.get(uri);
     }
 

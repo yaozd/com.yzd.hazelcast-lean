@@ -2,8 +2,6 @@ package com.yzd.hazelcast;
 
 import com.hazelcast.cluster.Member;
 
-import java.util.Set;
-
 /**
  * @Author: yaozh
  * @Description:
@@ -11,6 +9,7 @@ import java.util.Set;
 public interface SessionStorage {
     /**
      * member id
+     *
      * @param member
      * @return
      */
@@ -18,6 +17,7 @@ public interface SessionStorage {
 
     /**
      * destroy set
+     *
      * @param memberId
      */
     void destroyDistributedObjectsByMemberId(String memberId);

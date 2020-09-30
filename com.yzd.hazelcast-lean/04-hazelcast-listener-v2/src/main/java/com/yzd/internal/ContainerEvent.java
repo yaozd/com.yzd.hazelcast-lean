@@ -16,11 +16,11 @@ public class ContainerEvent {
                 .incrementRequestPendingGauge(duplexFlowContext.getServiceName());
     }
 
-    private static void fireEntryOutputComplete(DuplexFlowContext duplexFlowContext,String message) {
+    public static void fireEntryOutputComplete(DuplexFlowContext duplexFlowContext, String message) {
         if (!duplexFlowContext.close()) {
             return;
         }
-        int targetCode=duplexFlowContext.getTargetStatus();
+        int targetCode = duplexFlowContext.getTargetStatus();
         duplexFlowContext.setInnerStatus(targetCode);
         duplexFlowContext.getHttpServerRequest().response().setStatusCode(targetCode).end(message);
         complete(duplexFlowContext);
@@ -48,5 +48,6 @@ public class ContainerEvent {
         long totalCost = System.currentTimeMillis() - duplexFlowContext.getRequestStartTime();
         container.getMetricsManager()
                 .changeRequestLatencyHistogram(duplexFlowContext.getServiceName(), totalCost);
+        //todo router log
     }
 }

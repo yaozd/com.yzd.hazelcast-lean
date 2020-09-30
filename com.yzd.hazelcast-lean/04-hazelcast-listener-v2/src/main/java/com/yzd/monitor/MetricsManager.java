@@ -99,6 +99,7 @@ public interface MetricsManager {
 
     /**
      * local session
+     *
      * @param size
      */
     void activeLocalSessionGauge(int size);

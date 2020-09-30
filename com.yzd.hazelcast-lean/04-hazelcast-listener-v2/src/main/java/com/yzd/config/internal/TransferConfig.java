@@ -10,6 +10,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RouterConfig {
+public class TransferConfig {
     private Integer port = SocketUtil.getRandomPort();
 }

@@ -15,7 +15,6 @@ import com.orbitz.consul.model.health.ServiceHealth;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -74,7 +73,7 @@ public class ConsulClient {
                 .addTags(SERVICE_CREATE_TIME + nowToStr())
                 //.putMeta(SERVICE_CREATE_TIME, nowToStr())
                 .addChecks(ttlCheck);
-        if(tags!=null){
+        if (tags != null) {
             registrationBuilder.addTags(tags);
         }
         agentClient.register(registrationBuilder.build());

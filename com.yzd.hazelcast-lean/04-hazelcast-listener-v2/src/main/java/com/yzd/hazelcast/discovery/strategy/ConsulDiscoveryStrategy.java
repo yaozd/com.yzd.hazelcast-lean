@@ -21,12 +21,12 @@ public class ConsulDiscoveryStrategy extends AbstractDiscoveryStrategy {
     public ConsulDiscoveryStrategy(DiscoveryNode localDiscoveryNode, ILogger logger, Map<String, Comparable> properties) {
         super(logger, properties);
         this.localDiscoveryNode = localDiscoveryNode;
-        this.properties=properties;
-        this.consulUrl=properties.get(ConsulDiscoveryConfiguration.CONSUL_URL.key()).toString();
-        this.serviceName=properties.get(ConsulDiscoveryConfiguration.CONSUL_SERVICE_NAME.key()).toString();
-        this.tll= Integer.parseInt(properties.get(ConsulDiscoveryConfiguration.TLL.key()).toString());
+        this.properties = properties;
+        this.consulUrl = properties.get(ConsulDiscoveryConfiguration.CONSUL_URL.key()).toString();
+        this.serviceName = properties.get(ConsulDiscoveryConfiguration.CONSUL_SERVICE_NAME.key()).toString();
+        this.tll = Integer.parseInt(properties.get(ConsulDiscoveryConfiguration.TLL.key()).toString());
         String tagsStr = properties.get(ConsulDiscoveryConfiguration.CONSUL_SERVICE_TAGS.key()).toString();
-        this.tags= StringUtils.isBlank(tagsStr)?null:tagsStr.split("|");
+        this.tags = StringUtils.isBlank(tagsStr) ? null : tagsStr.split("|");
 
     }
 
