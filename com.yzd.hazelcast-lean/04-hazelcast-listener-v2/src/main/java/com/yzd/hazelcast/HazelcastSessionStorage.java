@@ -21,8 +21,8 @@ import java.util.*;
 @Slf4j
 public class HazelcastSessionStorage implements SessionStorage {
 
-    private final SessionConfig sessionConfig;
     private final static String GRPC_PORT_ATTRIBUTE = "grpc_port_key";
+    private final SessionConfig sessionConfig;
     private final String SET_ID_ATTRIBUTE = "set_id_key";
     private final String localSetName;
     private final String instanceName;
@@ -33,6 +33,7 @@ public class HazelcastSessionStorage implements SessionStorage {
     private final ISet<String> localSet;
     private final NodeInfo localNodeInfo;
     private final Container container;
+    private final Integer grpcPort;
     /**
      * 外部节点set对象集合
      */
@@ -41,8 +42,9 @@ public class HazelcastSessionStorage implements SessionStorage {
     private List<NodeInfo> nodeInfoList = new ArrayList<>();
 
     public HazelcastSessionStorage(Container container) {
-        this.container=container;
-        this.sessionConfig=container.getSessionConfig();
+        this.container = container;
+        this.grpcPort = container.getTransferConfig().getPort();
+        this.sessionConfig = container.getSessionConfig();
         this.instanceName = sessionConfig.getServiceName();
         Config conf = new ClasspathXmlConfig("hazelcast-consul-discovery-spi-example.xml");
         initDiscoveryConfig(sessionConfig, conf);
@@ -60,7 +62,7 @@ public class HazelcastSessionStorage implements SessionStorage {
         conf.addSetConfig(setConfig);
         MemberAttributeConfig memberAttributeConfig = new MemberAttributeConfig();
         memberAttributeConfig.setAttribute(SET_ID_ATTRIBUTE, localSetName);
-        memberAttributeConfig.setAttribute(GRPC_PORT_ATTRIBUTE, "6501");
+        memberAttributeConfig.setAttribute(GRPC_PORT_ATTRIBUTE, String.valueOf(grpcPort));
         conf.setMemberAttributeConfig(memberAttributeConfig);
         //
         conf.getManagementCenterConfig().setScriptingEnabled(false);
