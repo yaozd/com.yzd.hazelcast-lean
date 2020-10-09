@@ -1,4 +1,4 @@
-package com.yzd.config;
+package com.yzd.config.internal;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "listener.session")
 public class SessionConfig {
     private String consulUrl;
     private String serviceName;

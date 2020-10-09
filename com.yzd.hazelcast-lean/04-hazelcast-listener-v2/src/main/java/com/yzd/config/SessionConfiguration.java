@@ -1,6 +1,7 @@
 package com.yzd.config;
 
 
+import com.yzd.config.internal.SessionConfig;
 import com.yzd.hazelcast.HazelcastSessionStorage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +16,10 @@ import javax.annotation.PostConstruct;
  * @Description:
  */
 @Slf4j
-@EnableConfigurationProperties(SessionConfig.class)
-@Configuration
+//@EnableConfigurationProperties(SessionConfig.class)
 public class SessionConfiguration {
 
-    @Autowired
+
     SessionConfig sessionConfig;
 
     @Getter
@@ -27,6 +27,6 @@ public class SessionConfiguration {
 
     @PostConstruct
     public void initSession() {
-        hazelcastSessionStorage = new HazelcastSessionStorage(sessionConfig);
+       // hazelcastSessionStorage = new HazelcastSessionStorage(sessionConfig);
     }
 }

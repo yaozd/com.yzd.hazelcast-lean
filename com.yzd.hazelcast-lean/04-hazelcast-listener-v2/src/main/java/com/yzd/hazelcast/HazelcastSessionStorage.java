@@ -6,9 +6,10 @@ import com.hazelcast.config.*;
 import com.hazelcast.core.DistributedObject;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.yzd.config.SessionConfig;
+import com.yzd.config.internal.SessionConfig;
 import com.yzd.hazelcast.discovery.strategy.ConsulDiscoveryConfiguration;
 import com.yzd.hazelcast.discovery.strategy.ConsulDiscoveryStrategy;
+import com.yzd.internal.Container;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -20,6 +21,7 @@ import java.util.*;
 @Slf4j
 public class HazelcastSessionStorage implements SessionStorage {
 
+    private final SessionConfig sessionConfig;
     private final static String GRPC_PORT_ATTRIBUTE = "grpc_port_key";
     private final String SET_ID_ATTRIBUTE = "set_id_key";
     private final String localSetName;
@@ -30,6 +32,7 @@ public class HazelcastSessionStorage implements SessionStorage {
      */
     private final ISet<String> localSet;
     private final NodeInfo localNodeInfo;
+    private final Container container;
     /**
      * 外部节点set对象集合
      */
@@ -37,7 +40,9 @@ public class HazelcastSessionStorage implements SessionStorage {
 
     private List<NodeInfo> nodeInfoList = new ArrayList<>();
 
-    public HazelcastSessionStorage(SessionConfig sessionConfig) {
+    public HazelcastSessionStorage(Container container) {
+        this.container=container;
+        this.sessionConfig=container.getSessionConfig();
         this.instanceName = sessionConfig.getServiceName();
         Config conf = new ClasspathXmlConfig("hazelcast-consul-discovery-spi-example.xml");
         initDiscoveryConfig(sessionConfig, conf);

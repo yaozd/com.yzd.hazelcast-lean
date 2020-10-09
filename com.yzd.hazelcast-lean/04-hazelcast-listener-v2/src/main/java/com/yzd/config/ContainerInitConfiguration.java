@@ -21,8 +21,8 @@ public class ContainerInitConfiguration {
     private ContainerProperties containerProperties;
     @Autowired
     private MonitorConfiguration monitorConfiguration;
-    @Autowired
-    private SessionConfiguration sessionConfiguration;
+//    @Autowired
+//    private SessionConfiguration sessionConfiguration;
 
     @PostConstruct
     private void initContainer() {
@@ -34,7 +34,7 @@ public class ContainerInitConfiguration {
         }
         Container container = Container.getInstance();
         container.setMetricsManager(monitorConfiguration.getMetricsManager());
-        container.setSessionStorage(sessionConfiguration.getHazelcastSessionStorage());
+        //container.setSessionStorage(sessionConfiguration.getHazelcastSessionStorage());
         container.start(containerConfig);
     }
 

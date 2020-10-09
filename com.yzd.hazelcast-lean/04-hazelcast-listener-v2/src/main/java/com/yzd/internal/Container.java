@@ -3,8 +3,10 @@ package com.yzd.internal;
 import com.yzd.config.ContainerConfig;
 import com.yzd.config.internal.ProtocolConfig;
 import com.yzd.config.internal.RouterConfig;
+import com.yzd.config.internal.SessionConfig;
 import com.yzd.config.internal.TransferConfig;
 import com.yzd.context.DuplexFlowContext;
+import com.yzd.hazelcast.HazelcastSessionStorage;
 import com.yzd.hazelcast.SessionStorage;
 import com.yzd.monitor.MetricsManager;
 import com.yzd.transfer.TransferServer;
@@ -36,17 +38,17 @@ public class Container {
     @Getter
     private volatile RouterConfig routerConfig;
     @Getter
-    private ProtocolConfig protocolConfig;
+    private volatile ProtocolConfig protocolConfig;
     @Getter
-    private TransferConfig transferConfig;
+    private volatile TransferConfig transferConfig;
+    private TransferServer transferServer;
+    @Getter
+    private volatile SessionConfig sessionConfig;
+    @Getter
+    private volatile SessionStorage sessionStorage;
     @Getter
     @Setter
     private volatile MetricsManager metricsManager;
-    @Getter
-    @Setter
-    private volatile SessionStorage sessionStorage;
-
-    private TransferServer transferServer;
 
     public static Container getInstance() {
         return INSTANCE;
@@ -76,8 +78,10 @@ public class Container {
         this.routerConfig = containerConfig.getRouterConfig();
         this.protocolConfig = containerConfig.getProtocolConfig();
         this.transferConfig = containerConfig.getTransferConfig();
+        this.sessionConfig = containerConfig.getSessionConfig();
         this.simpleRouter = new SimpleRouter(this);
         this.transferServer = new TransferServer(this);
+        this.sessionStorage = new HazelcastSessionStorage(this);
     }
 
     public void shutdown() {
