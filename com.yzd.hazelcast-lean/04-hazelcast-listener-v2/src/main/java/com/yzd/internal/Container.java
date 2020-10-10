@@ -9,6 +9,7 @@ import com.yzd.context.DuplexFlowContext;
 import com.yzd.hazelcast.HazelcastSessionStorage;
 import com.yzd.hazelcast.SessionStorage;
 import com.yzd.monitor.MetricsManager;
+import com.yzd.transfer.TransferClientManager;
 import com.yzd.transfer.TransferServer;
 import com.yzd.verticle.SimpleRouter;
 import lombok.Getter;
@@ -49,6 +50,8 @@ public class Container {
     @Getter
     @Setter
     private volatile MetricsManager metricsManager;
+    @Getter
+    private volatile TransferClientManager transferClientManager = new TransferClientManager();
 
     public static Container getInstance() {
         return INSTANCE;
@@ -92,6 +95,7 @@ public class Container {
         sessionStorage.shutdown();
         simpleRouter.shutdown();
         transferServer.shutdown();
+        transferClientManager.shutdown();
     }
 
     public void addDuplexFlowContext(DuplexFlowContext duplexFlowContext) {

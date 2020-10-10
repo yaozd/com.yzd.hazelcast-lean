@@ -28,7 +28,6 @@ public class TransferServer {
 
     private void start() {
         int port = transferConfig.getPort();
-        log.warn("grpc port:{}", port);
         NettyServerBuilder serverBuilder = NettyServerBuilder.forPort(port);
         serverBuilder.directExecutor();
         serverBuilder.addService(new TransferService(container));
@@ -46,5 +45,6 @@ public class TransferServer {
         if (server != null) {
             server.shutdown();
         }
+        log.info("Shutdown transfer server success!");
     }
 }

@@ -37,8 +37,9 @@ public class ContainerInitConfiguration {
 
     @PreDestroy
     private void destroyContainer() {
+        log.info("Shutdown container start …………");
         Container.getInstance().shutdown();
-        log.info("shutdown");
+
     }
 
 }

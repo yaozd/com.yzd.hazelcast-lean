@@ -76,10 +76,11 @@ public class HazelcastSessionStorage implements SessionStorage {
         this.instance = Hazelcast.newHazelcastInstance(conf);
         this.localSet = this.instance.getSet(localSetName);
         Member localMember = this.instance.getCluster().getLocalMember();
-        this.localNodeInfo = newSessionInfo(localMember);
+        this.localNodeInfo = newNodeInfo(localMember);
+        update();
     }
 
-    private NodeInfo newSessionInfo(Member member) {
+    private NodeInfo newNodeInfo(Member member) {
         return new NodeInfo().setMemberId(getMemberId(member))
                 .setIp(member.getSocketAddress().getHostString())
                 .setPort(member.getSocketAddress().getPort())
@@ -127,9 +128,12 @@ public class HazelcastSessionStorage implements SessionStorage {
     @Override
     public void update() {
         List<NodeInfo> tempNodeInfos = new ArrayList<>();
-        tempNodeInfos.add(localNodeInfo);
-        addSessionInfosOfOutMember(tempNodeInfos);
+        if (localNodeInfo != null) {
+            tempNodeInfos.add(localNodeInfo);
+        }
+        addNodeInfosOfOuterMember(tempNodeInfos);
         this.nodeInfoList = tempNodeInfos;
+        this.container.getTransferClientManager().updateClient(this.nodeInfoList);
     }
 
     @Override
@@ -153,7 +157,7 @@ public class HazelcastSessionStorage implements SessionStorage {
         instance.getSet(localSetName).remove(uuid);
     }
 
-    private void addSessionInfosOfOutMember(List<NodeInfo> tempNodeInfos) {
+    private void addNodeInfosOfOuterMember(List<NodeInfo> tempNodeInfos) {
         if (instance == null) {
             return;
         }
@@ -162,7 +166,7 @@ public class HazelcastSessionStorage implements SessionStorage {
             if (member.localMember()) {
                 continue;
             }
-            tempNodeInfos.add(newSessionInfo(member));
+            tempNodeInfos.add(newNodeInfo(member));
         }
     }
 
@@ -184,6 +188,7 @@ public class HazelcastSessionStorage implements SessionStorage {
         }
         instance.getSet(localSetName).destroy();
         instance.shutdown();
+        log.info("Shutdown hazelcast session success!");
     }
 
     @Override

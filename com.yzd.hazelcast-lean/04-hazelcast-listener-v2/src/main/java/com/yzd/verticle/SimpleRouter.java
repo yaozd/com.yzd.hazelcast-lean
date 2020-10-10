@@ -118,5 +118,6 @@ public class SimpleRouter extends AbstractVerticle {
     public void shutdown() {
         vertx.close();
         vertx.nettyEventLoopGroup().shutdownGracefully();
+        log.info("Shutdown simple router success!");
     }
 }

@@ -1,7 +1,9 @@
 package com.yzd.transfer;
 
 import com.yzd.hazelcast.NodeInfo;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author: yaozh
  * @Description:
  */
+@Slf4j
 public class TransferClientManager {
     private Map<String, TransferClient> clientMap = new ConcurrentHashMap<>();
 
@@ -36,6 +39,12 @@ public class TransferClientManager {
     }
 
     private TransferClient newTransferClient(NodeInfo memberInfo) {
+        log.warn("transfer server ip:{} , port:{}", memberInfo.getIp(), memberInfo.getGrpcPort());
         return new TransferClient(memberInfo);
+    }
+
+    public void shutdown() {
+        updateClient(Collections.emptyList());
+        log.info("Shutdown transfer client manager success!");
     }
 }
