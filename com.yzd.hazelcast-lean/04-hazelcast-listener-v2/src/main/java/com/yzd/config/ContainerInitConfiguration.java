@@ -32,12 +32,17 @@ public class ContainerInitConfiguration {
         }
         Container container = Container.getInstance();
         container.setMetricsManager(monitorConfiguration.getMetricsManager());
-        container.start(containerConfig);
+        try {
+            container.start(containerConfig);
+        } catch (Exception ex) {
+            log.error("Container start fail!", ex);
+            System.exit(1);
+        }
     }
 
     @PreDestroy
     private void destroyContainer() {
-        log.info("Shutdown container start …………");
+        log.info("Shutdown container progressing …………");
         Container.getInstance().shutdown();
 
     }

@@ -30,7 +30,7 @@ public class TransferClientManager {
         Iterator<Map.Entry<String, TransferClient>> iterator = clientMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, TransferClient> entry = iterator.next();
-            boolean noneMatch = memberInfos.stream().noneMatch(m -> m.getMemberId() == entry.getKey());
+            boolean noneMatch = memberInfos.stream().noneMatch(m -> m.getMemberId().equals(entry.getKey()));
             if (noneMatch) {
                 entry.getValue().shutdown();
                 iterator.remove();
