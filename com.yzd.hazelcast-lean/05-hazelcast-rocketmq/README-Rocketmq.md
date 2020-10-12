@@ -1,5 +1,9 @@
 # rocketMQ
 
+## 入门
+- [RocketMQ入门到入土（一）新手也能看懂的原理和实战！](https://www.debug8.com/java/t_54999.html)
+- [参数说明](https://blog.csdn.net/qq_32711825/article/details/78579864)
+
 ## 关键词解析
 - [NameServer](https://www.jianshu.com/p/3d8d594d9161)
     ```
@@ -128,6 +132,7 @@ fee-plat:
 - windows
 - [window 中安装rocketMq和rocketMq-console](https://blog.csdn.net/junge1545/article/details/89922704)
 ```
+注：必须在DOS命令窗口下执行，不可在powershell窗口下执行
 1.
 下载地址
 https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.7.1/rocketmq-all-4.7.1-bin-release.zip
@@ -136,20 +141,36 @@ https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.7.1/rocketmq-all-4.7.1-bin
 变量名：ROCKETMQ_HOME
 3.
 启动NAMESERVER
-cmd命令框执行进入至‘MQ文件夹\bin’下，然后执行‘start mqnamesrv.cmd’
+cmd命令框执行进入至‘MQ文件夹\bin’下，然后执行
+start mqnamesrv.cmd
 4.
 启动BROKER
-cmd命令框执行进入至‘MQ文件夹\bin’下，然后执行‘start mqbroker.cmd -n 127.0.0.1:9876 autoCreateTopicEnable=true’
+cmd命令框执行进入至‘MQ文件夹\bin’下，然后执行
+start mqbroker.cmd -n 127.0.0.1:9876 autoCreateTopicEnable=true
 5.控制台
 下载地址：
 https://github.com/apache/rocketmq-externals.git
 打包：
-进入‘\rocketmq-externals\rocketmq-console’文件夹，执行‘mvn clean package -Dmaven.test.skip=true’
+进入‘\rocketmq-externals\rocketmq-console’文件夹，执行
+mvn clean package -Dmaven.test.skip=true
 PS:可能需要调整maven仓库
 启动：
 java -jar rocketmq-console-ng-1.0.1.jar
 测试：
 http://127.0.0.1:8080/
+```
+- [Win10在当前目录快速打开cmd的方法](https://www.cnblogs.com/yizhilin/p/12975052.html)
+- [win 下 dos查看和设置环境变量](https://jingyan.baidu.com/article/574c5219053a926c8d9dc1ed.html)
+```
+# 设置临时环境变量：
+1.
+echo %ROCKETMQ_HOME%
+2.
+设置环境变量ROCKETMQ_HOME (当前窗口有效)
+set ROCKETMQ_HOME=xxx
+3.
+确认
+echo %ROCKETMQ_HOME%
 ```
 
 - maven仓库

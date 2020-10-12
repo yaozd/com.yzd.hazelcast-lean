@@ -13,6 +13,7 @@ import java.util.List;
  * @Description:
  */
 public class Consumer {
+    private static final String TASK_ID_NAME = "T_ID";
     public static void main(String[] args) throws InterruptedException, MQClientException {
 
         // Instantiate with specified consumer group name.
@@ -31,7 +32,7 @@ public class Consumer {
                                                             ConsumeConcurrentlyContext context) {
                 System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
                 for (Message msg : msgs) {
-
+                    String taskId = msg.getProperty(TASK_ID_NAME);
                     String jsonStr = new String(msg.getBody());
                     System.out.println("receive is " + jsonStr);
                 }

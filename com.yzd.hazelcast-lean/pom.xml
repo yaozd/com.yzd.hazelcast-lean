@@ -25,6 +25,7 @@
         <module>04-hazelcast-listener-v2</module>
         <module>06-hazelcast-auto-test</module>
         <module>02-hazelcast-in-grpc-transfer</module>
+        <module>05-hazelcast-rocketmq-web</module>
     </modules>
 
     <properties>
