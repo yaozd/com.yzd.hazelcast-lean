@@ -9,6 +9,7 @@ import com.yzd.context.DuplexFlowContext;
 import com.yzd.hazelcast.HazelcastSessionStorage;
 import com.yzd.hazelcast.SessionStorage;
 import com.yzd.monitor.MetricsManager;
+import com.yzd.rocketmq.RocketmqConsumer;
 import com.yzd.transfer.TransferClientManager;
 import com.yzd.transfer.TransferServer;
 import com.yzd.verticle.SimpleRouter;
@@ -52,6 +53,8 @@ public class Container {
     private volatile MetricsManager metricsManager;
     @Getter
     private volatile TransferClientManager transferClientManager = new TransferClientManager();
+    private volatile RocketmqConsumer rocketmqConsumer;
+
 
     public static Container getInstance() {
         return INSTANCE;
@@ -85,6 +88,7 @@ public class Container {
         this.simpleRouter = new SimpleRouter(this);
         this.transferServer = new TransferServer(this);
         this.sessionStorage = new HazelcastSessionStorage(this);
+        this.rocketmqConsumer=new RocketmqConsumer(this);
     }
 
     public void shutdown() {
