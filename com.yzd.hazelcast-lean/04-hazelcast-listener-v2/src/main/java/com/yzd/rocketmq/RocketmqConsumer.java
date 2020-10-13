@@ -18,6 +18,9 @@ import org.apache.rocketmq.common.message.MessageExt;
 import java.util.List;
 
 /**
+ * 需要调整重试时间间隔，加快消费
+ * # RocketMQ可在broker.conf文件中配置Consumer端的重试次数和重试时间间隔，如下：
+ * messageDelayLevel = 1s 1s 1s 1s 1s 1s 1s 2s 3s 4s 5s
  * @Author: yaozh
  * @Description:
  */
@@ -51,7 +54,12 @@ public class RocketmqConsumer {
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,
                                                             ConsumeConcurrentlyContext context) {
                 log.info("Receive New Messages:{},current thread name:{}", msgs, Thread.currentThread().getName());
-                for (Message msg : msgs) {
+                for (MessageExt msg : msgs) {
+                    //当前消息被重试次数
+                    if(msg.getReconsumeTimes()>3){
+                        log.warn("ID:{},ReconsumeTimes {},fail!",msg.getMsgId(),msg.getReconsumeTimes());
+                        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                    }
                     String taskId = msg.getProperty(TASK_ID_NAME);
                     String jsonStr = new String(msg.getBody());
                     log.info("receive is " + jsonStr);

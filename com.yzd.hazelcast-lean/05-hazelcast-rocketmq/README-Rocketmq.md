@@ -147,6 +147,8 @@ start mqnamesrv.cmd
 启动BROKER
 cmd命令框执行进入至‘MQ文件夹\bin’下，然后执行
 start mqbroker.cmd -n 127.0.0.1:9876 autoCreateTopicEnable=true
+启动增加配置文件broker.conf
+start mqbroker.cmd -n 127.0.0.1:9876 autoCreateTopicEnable=true -c ../conf/broker.conf
 5.控制台
 下载地址：
 https://github.com/apache/rocketmq-externals.git
@@ -158,6 +160,18 @@ PS:可能需要调整maven仓库
 java -jar rocketmq-console-ng-1.0.1.jar
 测试：
 http://127.0.0.1:8080/
+```
+- broker.conf
+```
+brokerClusterName = DefaultCluster
+brokerName = broker-a
+brokerId = 0
+deleteWhen = 04
+fileReservedTime = 48
+brokerRole = ASYNC_MASTER
+flushDiskType = ASYNC_FLUSH
+# RocketMQ可在broker.conf文件中配置Consumer端的重试次数和重试时间间隔，如下：
+messageDelayLevel = 1s 1s 1s 1s 1s 1s 1s 2s 3s 4s 5s
 ```
 - [Win10在当前目录快速打开cmd的方法](https://www.cnblogs.com/yizhilin/p/12975052.html)
 - [win 下 dos查看和设置环境变量](https://jingyan.baidu.com/article/574c5219053a926c8d9dc1ed.html)

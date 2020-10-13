@@ -15,8 +15,8 @@ import java.net.URI;
  * @Description:
  */
 public class VertxWebClient {
-    private final static String QUERY_SPLIT_CHART = "&";
-    private final static String PARAM_SPLIT_CHART = "=";
+    private static final String QUERY_SPLIT_CHART = "&";
+    private static final String PARAM_SPLIT_CHART = "=";
     private final WebClient client;
 
     public VertxWebClient(int maxPoolSize) {
@@ -29,12 +29,8 @@ public class VertxWebClient {
     }
 
     public void get(URI uri) {
-        String[] queryList = StringUtils.split(uri.getRawQuery(), QUERY_SPLIT_CHART);
         HttpRequest<Buffer> httpRequest = client.get(uri.getPort(), uri.getHost(), uri.getRawPath());
-        for (int i = 0; i < queryList.length; i++) {
-            String[] params = StringUtils.split(queryList[i], PARAM_SPLIT_CHART);
-            httpRequest.addQueryParam(params[0], params[1]);
-        }
+        addQueryParams(uri, httpRequest);
         httpRequest.send(ar -> {
             if (ar.succeeded()) {
                 // Obtain response
@@ -44,5 +40,16 @@ public class VertxWebClient {
                 System.out.println("Something went wrong " + ar.cause().getMessage());
             }
         });
+    }
+
+    private void addQueryParams(URI uri, HttpRequest<Buffer> httpRequest) {
+        String[] queryList = StringUtils.split(uri.getRawQuery(), QUERY_SPLIT_CHART);
+        if (queryList == null) {
+            return;
+        }
+        for (int i = 0; i < queryList.length; i++) {
+            String[] params = StringUtils.split(queryList[i], PARAM_SPLIT_CHART);
+            httpRequest.addQueryParam(params[0], params[1]);
+        }
     }
 }

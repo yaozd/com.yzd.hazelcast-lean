@@ -25,7 +25,8 @@ public class VertxWebClientTest {
     @Before
     public void init() {
         vertxWebClient = new VertxWebClient(MAX_POOL_SIZE);
-        urlTemplate = "http://127.0.0.1:1000/?uuid=%s";
+        //urlTemplate = "http://127.0.0.1:1000/?uuid=%s";
+        urlTemplate = "http://localhost:18081/user/newTask";
         System.out.println("sample:"+newURI());
     }
 
@@ -35,7 +36,7 @@ public class VertxWebClientTest {
     }
 
     @Test
-    @PerfTest(threads = 10, invocations = 1)
+    @PerfTest(threads = 10, invocations = 100000)
     public void get() {
         URI uri = newURI();
         System.out.println(uri);
@@ -43,12 +44,7 @@ public class VertxWebClientTest {
     }
 
     private URI newURI() {
-        try {
-            return new URI(String.format(urlTemplate, UUID.randomUUID().toString()));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        return URI.create(String.format(urlTemplate, UUID.randomUUID().toString()));
     }
 
 }
