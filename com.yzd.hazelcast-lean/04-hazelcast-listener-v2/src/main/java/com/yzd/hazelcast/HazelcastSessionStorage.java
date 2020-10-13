@@ -56,6 +56,7 @@ public class HazelcastSessionStorage implements SessionStorage {
         //备份的数量。如果1设置为备份数量，也就是说为了安全将map上的所有条目复制到另一个JVM上
         //0表示没有备份。
         setConfig.setBackupCount(0);
+        setConfig.setAsyncBackupCount(0);
         //statistics-enabled: 一些统计数据就像等待操作数,操作数,操作完成,取消操作数可以通过设置该参数的值是真来进行检索，
         //检索统计数据的方法是getLocalExecutorStats()。
         setConfig.setStatisticsEnabled(false);

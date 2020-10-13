@@ -68,6 +68,7 @@ public class RocketmqConsumer {
                     //一般重复16次 10s、30s、1分钟、2分钟、3分钟等等 ,可根据具体业务再调整即可
                     //如果MQ中消息在请求之前到达，则需要通过重试的方式。
                     if (!isOk) {
+                        log.info("ID:{},IS_OK:{}", taskId, isOk);
                         //返回消费状态
                         //CONSUME_SUCCESS 消费成功
                         //RECONSUME_LATER 消费失败，需要稍后重新消费
@@ -78,8 +79,8 @@ public class RocketmqConsumer {
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
         });
-
         //Launch the consumer instance.
+        //todo 此处可以间接性，验证hazelcast 数据同步时长
         consumer.start();
     }
 

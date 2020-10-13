@@ -49,7 +49,7 @@ public class UserController {
                 .setNameFormat("demo-pool-%d").build();
         //Common Thread Pool
         return new ThreadPoolExecutor(1, 1, 0L,
-                TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(1024),
+                TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(100_000),
                 namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
     }
 

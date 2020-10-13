@@ -8,7 +8,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 /**
@@ -16,7 +15,7 @@ import java.util.UUID;
  * @Description:
  */
 public class VertxWebClientTest {
-    private static final int MAX_POOL_SIZE = 1000;
+    private static final int MAX_POOL_SIZE = 5_000;
     private VertxWebClient vertxWebClient;
     private String urlTemplate;
     @Rule
@@ -27,7 +26,7 @@ public class VertxWebClientTest {
         vertxWebClient = new VertxWebClient(MAX_POOL_SIZE);
         //urlTemplate = "http://127.0.0.1:1000/?uuid=%s";
         urlTemplate = "http://localhost:18081/user/newTask";
-        System.out.println("sample:"+newURI());
+        System.out.println("sample:" + newURI());
     }
 
     @After
@@ -36,7 +35,7 @@ public class VertxWebClientTest {
     }
 
     @Test
-    @PerfTest(threads = 10, invocations = 100000)
+    @PerfTest(threads = 10, invocations = 100_000)
     public void get() {
         URI uri = newURI();
         System.out.println(uri);

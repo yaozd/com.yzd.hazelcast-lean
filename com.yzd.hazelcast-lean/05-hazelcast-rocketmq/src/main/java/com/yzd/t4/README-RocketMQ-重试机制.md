@@ -1,6 +1,7 @@
 # 重试机制
 - [RocketMQ详解(12)——RocketMQ的重试机制](https://blog.csdn.net/weixin_34452850/article/details/82746852)
 - [跟我学RocketMQ之消息重试机制](https://juejin.im/entry/6844903809186005000)
+- [RocketMQ延时消息的使用和延时级别的配置](https://blog.csdn.net/u014380653/article/details/52883356)
 - 明确
     > 只有当消费模式为 MessageModel.CLUSTERING(集群模式) 时，Broker才会自动进行重试，对于广播消息是不会重试的。
 - 配置

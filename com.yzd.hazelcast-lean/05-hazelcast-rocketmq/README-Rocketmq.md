@@ -2,6 +2,7 @@
 
 ## 入门
 - [RocketMQ入门到入土（一）新手也能看懂的原理和实战！](https://www.debug8.com/java/t_54999.html)
+- [win10 RocketMQ的简单运用](https://www.cnblogs.com/minblog/p/13328874.html)
 - [参数说明](https://blog.csdn.net/qq_32711825/article/details/78579864)
 
 ## 关键词解析
